@@ -1,0 +1,313 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphicx}
+\usepackage{epstopdf, epsfig}
+\epstopdfsetup{update}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+
+\newcommand{\bc}{\begin{center}}
+\newcommand{\ec}{\end{center}}
+
+\newcommand{\ds}{\displaystyle}
+
+\newcommand{\bt}{\begin{tabular}}
+\newcommand{\et}{\end{tabular}}
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
+\newcommand{\bd}{\begin{description}}
+\newcommand{\ed}{\end{description}}
+
+\newcommand{\bp}{\begin{pmatrix}}
+\newcommand{\ep}{\end{pmatrix}}
+
+\newcommand{\p}{\partial}
+\newcommand{\sech}{\mbox{sech}}
+
+\newcommand{\cf}{{\it cf.}~}
+
+\newcommand{\ltwo}{L_{2}(\mathbb{R}^{2})}
+\newcommand{\smooth}{C^{\infty}_{0}(\mathbb{R}^{2})}
+
+\newcommand{\br}{{\bf r}}
+\newcommand{\bk}{{\bf k}}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\bu}{{\bf u}}
+
+\newcommand{\gnorm}[1]{\left|\left| #1\right|\right|}
+\newcommand{\ipro}[2]{\left<#1,#2 \right>}
+\title{Data-Derived Wavelets for Nonlinear Wave Packet Detection}
+\author{C.W. Curtis, J. Gilles}
+\date{}
+\begin{document}
+\maketitle
+\section*{Problem Motivation}
+So, sparing one the usual details, at the end of the day we wish to solve the following nonlinear system of partial differential equations
+\begin{align}
+\eta_{t} = & \left(\mathcal{G}_{0} + \epsilon \mathcal{G}_{1} + \epsilon^{2}\mathcal{G}_{2}\right)q, \label{knmct}\\
+q_{t} = & -\eta + \tilde{\sigma}\eta_{xx} \nonumber \\
+& - \frac{\epsilon}{2} \left(-\left(\mathcal{G}_{0}q\right)^{2} - 2\epsilon\mathcal{G}_{0}q\mathcal{G}_{1}q + q_{x}^{2} \right)
+- \epsilon^{2} \left( \frac{3}{2}\tilde{\sigma}\eta_{x}^{2}\eta_{xx} - \eta_{x} q_{x}\mathcal{G}_{0}q  \right) \label{bernou},
+\end{align}
+where
+\begin{align*}
+\mathcal{G}_{0}q = & -\mathcal{H}\p_{x}q\\
+\mathcal{G}_{1}q = & -\mathcal{G}_{0}\left(\eta \mathcal{G}_{0}q\right) - \p_{x}\left(\eta \p_{x}q\right)\\
+\mathcal{G}_{2}q = & -\mathcal{G}_{0}\left(\eta \mathcal{G}_{1}q\right)  + \frac{1}{2}\p_{x}^{2}\left(\eta^{2}\mathcal{G}_{0}q\right) + \frac{1}{2}\p_{x}^{2}\mathcal{H}\left(\eta^{2}q_{x}\right).
+\end{align*}
+The nonlocality in the full equations comes from the Hilbert transform, $\mathcal{H}$, defined by 
+\[
+\mathcal{H}f = \frac{1}{2\pi}\int_{\mathbb{R}}dk~ e^{ikx}  i\mbox{sgn}(k) \hat{f}(k),
+\]
+where $\hat{f}(k)$ is the Fourier transform of $f(x)$ defined by
+\[
+\hat{f}(k) = \int_{\mathbb{R}}dx~ e^{-ikx}f(x).
+\]
+In order to reduce the complexity of this model, we traditionally assume that 
+\begin{align*}
+\eta(x,t) = & \eta_{1}(\xi,\tau)e^{i\theta} +  \eta_{1}^{\ast}(\xi,\tau)e^{-i\theta} + \epsilon\left(\eta_{2}(\xi,\tau)e^{2i\theta} +  \eta_{2}^{\ast}(\xi,\tau)e^{-2i\theta}\right)+\cdots\\
+q(x,t) = & q_{1}(\xi,\tau)e^{i\theta} +  q_{1}^{\ast}(\xi,\tau)e^{-i\theta} + \epsilon\left(q_{2}(\xi,\tau)e^{2i\theta} +  q_{2}^{\ast}(\xi,\tau)e^{-2i\theta}\right)+\cdots
+\end{align*}
+where
+\begin{equation*}
+\theta = k_{0}x + \Omega t, ~ \xi = \epsilon(x + c_{g}t), ~ \tau = \epsilon^{2}t.
+\end{equation*}
+Following the usual path, we then get 
+\begin{equation*}
+\Omega_{\pm}(k_{0})  = \pm \sqrt{|k_{0}|(1+\tilde{\sigma}k_{0}^{2})},
+\end{equation*}
+and at $\mathcal{O}(\epsilon)$ we find that
+\[
+c_{g} = \frac{1+3\tilde{\sigma}k_{0}^{2}}{2s\Omega},
+\]
+where $s=\mbox{sgn}(k_{0})$.  Ultimately, we are able to describe the slow evolution of the envelope $\eta_{1}(\xi,\tau)$ via the Nonlinear-Schr\"{o}dinger Equation (NLSE) given by 
+\begin{equation*}
+i\p_{\tau}\eta_{1} + \alpha_{nl}\left|\eta_{1}\right|^{2}\eta_{1} + \alpha_{d}\p_{\xi}^{2}\eta_{1} = 0,
+\end{equation*}
+where
+\begin{align*}
+\alpha_{d}(k_{0}) = & \frac{(c^2_{g} - 3|k_{0}|\tilde{\sigma})}{2\Omega},\\
+\alpha_{nl}(k_{0}) = & \frac{k_{0}\left( sk_{0}^{3}\left(8 + \tilde{\sigma}k_{0}^{2} + 2(\tilde{\sigma}k_{0}^{2})^{2}\right)  \right)}{\left(2s\Omega \right) \left(4\Omega^2-s(2k_{0}(1+4\tilde{\sigma}k_{0}^{2}) )\right)},
+\end{align*}
+One of the more important features of the NLS equation is that in the focusing case, i.e. $\alpha_{d}/\alpha_{nl}>0$, it supports solitary traveling wave solutions, i.e. solitons, given by the formula
+\[
+\eta_{1}(\xi,\tau) = \beta \sqrt{\frac{2\alpha_{d}}{\alpha_{nl}}}\sech\left(\beta\left(\xi + c\tau \right)\right) e^{i\left(\varphi \tau - c(\xi+c\tau)/2\alpha_{d}\right)}, ~ c^{2} = 4\alpha_{d}(\varphi - \alpha_{d}\beta^{2}).
+\]
+As we know from Inverse-Scattering Theory (IST), the exponentially localized behavior of solitons typefies the response of the focusing NLS equation to rapidly decaying initial conditions. 
+
+\section*{A Data-Driven Approach to Wavelet Design}
+
+Given the form of our asymptotic ansatz, we are obliged to specify initial conditions $\eta_{0}(x)$ and $q_{0}(x)$ for Equations \eqref{knmct} and \eqref{bernou} consistent with using NLS as an approximating model.  Thus, we in fact specify initial conditions for the NLS equation so that 
+\[
+\eta_{0}(x) = \eta_{1}(\epsilon x,0)e^{ik_{0}x} +  \eta_{1}^{\ast}(\epsilon x,0)e^{-ik_{0}x}
+\]
+and likewise, using the lead-order approximation
+\[
+\p_{x}q_{0}(x) = -s\Omega \eta_{0}(x),
+\]
+we also see we should choose $\eta_{1}(x,0)$ so that 
+\[
+\int_{\mathbb{R}}dx \eta_{1}(x,0)e^{ik_{0}x/\epsilon} = 0.
+\]
+Note, while these assumptions on initial conditions are somewhat restrictive, they reflect the particular of the approximation which led us to the NLS equation.  Other approximation schemes certainly exist which relax these conditions.  
+
+Starting from this initial data then, we are able either numerically, or even analytically in some cases, to generate an affiliated NLS flow given by $\eta_{1}(\xi,\tau)$, $0\leq \tau \leq T$.  We then discretely sample this signal in time, say at time steps $\tau_{j} = j\delta \tau$, $j=0,\cdots,N_{T}-1$, $T = N_{T}\delta t$, thereby generating the $N_{T}$ spatial functions $\eta_{1j}(\xi) = \eta_{1}(\xi,\tau_{j})$. This motivates defining the {\it empirical measure} $\mu(A)$ where $A\subset L_{2}(\mathbb{R})$ is a Borel set (defined using the norm $\left|\left|\cdot\right|\right|_{2}$ on $L_{2}(\mathbb{R})$) and 
+\[
+\mu\left(A\right) = \lim_{N_{T}\rightarrow\infty} \frac{1}{N_{T}}\sum_{j=0}^{N_{T}-1} \tilde{I}_{A}\left(\eta_{1j}\left(\cdot \right) \right),
+\]
+where $\tilde{I}_{A}\left(\right)$ is the indicator function.  Letting the temporal flow operator $S_{\tau}$ be defined such that 
+\[
+\eta_{1}(\xi,\tau) = S_{\tau}\eta_{1}(\xi,0),
+\]
+with semigroup property $S_{\tau_{1}}S_{\tau_{2}} = S_{\tau_{1}+\tau_{2}}$, and assuming $S_{-\tau}$ is well defined, we see that 
+\[
+\tilde{I}_{A}\left(\eta_{1j}\left(\cdot \right) \right) = \tilde{I}_{A}\left(S_{\tau_{j}}\eta_{1}\left(\cdot,0\right) \right) = \tilde{I}_{S_{-\tau_{j}}A}\left(\eta_{1}\left(\cdot,0\right) \right).
+\]
+Therefore, we have that 
+\[
+\mu\left(S_{-\tau_{k}}A \right) = \lim_{N_{T}\rightarrow\infty} \frac{1}{N_{T}}\sum_{j=0}^{N_{T}-1} \tilde{I}_{A}\left(\eta_{1(j+k)}\left(\cdot \right) \right) = \mu\left(A\right),
+\]
+so that the measure is invariant with respect to the discretized sampling times.  Thus, we have a discretely invariant probability measure.  
+
+In turn then, we can define {\it emperical averages} of measureable functions 
+\[
+F: L_{2}\left(\mathbb{R}\right) \rightarrow L_{2}\left(\mathbb{R}\right)
+\]
+to be 
+\begin{align*}
+\left<F\right> = & \int_{L_{2}(\mathbb{R})}F(f) \mu(df) \\ 
+= & \frac{1}{T}\int_{0}^{T}F\left(\eta_{1}(\xi,t) \right)dt
+\end{align*}
+Note, one should probably restrict to dense subspaces of $L_{2}(\mathbb{R})$, such as the Sobolev space $H^{s}\left(\mathbb{R}\right)$, $s>1/2$, which are algebras and thus supportive of a relatively wide class of maps and thus measurable functions in the present context.  From a practical point-of-view, or as pratical as ``measueres over Hilbert spaces" can ever be, we can approximate the above integral with the usual `simple function' formalism so that 
+\begin{align*}
+\left<F\right> \sim & \sum_{l=1}^{N_{s}}F_{l}\mu\left(A_{l}\right), ~ F_{l}(\xi)\in L_{2}\left(\mathbb{R}\right)\\
+\sim& \frac{1}{N_{T}}\sum_{j=0}^{N_{T}-1}\sum_{l=1}^{N_{s}} F_{l}\tilde{I}_{A_{l}}\left(\eta_{1j}\right)\\
+\sim& \frac{1}{N_{T}}\sum_{j=0}^{N_{T}-1}F\left(\eta_{1j}(\xi)\right)
+\end{align*}
+which shows us that our formalism aligns with the usual frequency based determination of an ``average".  
+
+With this formalism in place, we define the autocorrelation operator $K$ so that for $\varphi\in L_{2}(\mathbb{R})$ we have 
+\begin{align*}
+K\varphi = & \left<\eta_{1}(\xi,\cdot),\left(\varphi(\xi^{'}),\eta_{1}(\xi^{'},\cdot)\right) \right>\\
+= & \int_{\mathbb{R}}\left<\eta_{1}(\xi,\cdot)\eta^{\ast}_{1}(\xi^{'},\cdot) \right>\varphi(\xi^{'})d\xi^{'},
+\end{align*}
+where $\left(,\right)$denotes the usual $L_{2}$ inner product and tacit Fubini-Tonelli argument has been used to exchange the order of averaging and integration.  This move is justified if 
+\[
+\left<\left|\eta_{1}(\xi,\cdot)\right|^{2}\right> < \infty, ~ \left<\left|\eta_{1}(\xi,\cdot)\right|^{2}\right>  \in L_{1}(\mathbb{R}).
+\]   
+
+Letting the kernel of $K$, say $k(\xi,\xi^{'})$ be given by 
+\[
+k(\xi,\xi^{'}) = \left<\eta_{1}(\xi,\cdot)\eta^{\ast}_{1}(\xi^{'},\cdot) \right>,
+\]
+existing results show that if $k(\xi,\xi)\in L_{1}(\mathbb{R})$, then this essentially ensures that $K$ is a Hilbert-Schmidt operator, and therefore has a norm-convergent representation in terms of its eigenfunctions in the form 
+\[
+K = \sum_{l=1}^{\infty}\mu_{l} \mathbb{P}_{l}, ~ \mathbb{P}_{l}f = \left(f,\varphi_{l}\right)\varphi_{l}, ~ \mu_{1}\geq \mu_{2}\geq \cdots \geq 0.
+\]
+The orthonormal modes $\varphi_{l}$ are called the {\it principal components} of the affiliated data set $\left\{\eta_{1j}(\xi)\right\}_{j=0}^{N_{T}-1}$.  
+
+For our future purposes, we need some estimates on the far-field behavior and regularity of $\varphi_{1}(\xi)$ based on the far-field behavior of the functions $\eta_{1j}(\xi)$.  Letting $\hat{\varphi}(k)$ denote the Fourier transform, we formally see that the principal components must satisfy the integral equation
+\[
+\lambda \hat{\varphi}(k) = \frac{1}{2\pi}\int_{\mathbb{R}}d\tilde{k}\left<\hat{\eta}_{1}(k,\cdot)\hat{\eta}^{\ast}_{1}(\tilde{k},\cdot) \right> \hat{\varphi}(\tilde{k})
+\]
+If we the treat the infinite limit of the averaging operation as in integral in time, we are then motivated to write 
+\[
+\frac{1}{2\pi}\int_{\mathbb{R}}\left<\hat{\eta}_{1}(k,\cdot)\hat{\eta}^{\ast}_{1}(\tilde{k},\cdot) \right> \hat{\varphi}(\tilde{k})d\tilde{k} = \frac{1}{T}\int_{0}^{T} \hat{\eta}_{1}(k,t)m(t) dt,
+\]
+where 
+\[
+m(t) = \left(\varphi(\cdot),\eta_{1}(\cdot,t)\right).
+\]
+When we then compute the $s$-Sobolev norm of $K\varphi$, say $\gnorm{K\varphi}_{s}$, we find using Minkowski's inequality, the Cauchy-Schwarz inequality, and basic results about Sobolev spaces that  
+\begin{align*}
+\gnorm{K\varphi}_{s} = & \frac{1}{T\sqrt{2\pi}}\left(\int_{\mathbb{R}}\left(1+k^{2}\right)^{s}\left|\int_{0}^{T} \hat{\eta}_{1}(k,t) m(t) dt \right|^{2} dk\right)^{1/2}\\
+\leq & \frac{1}{T}\int_{0}^{T}\left|m(t)\right|\gnorm{\eta_{1}(\cdot,t)}_{s}dt\\
+\leq & \frac{\gnorm{\varphi}_{2}}{T}\int_{0}^{T}\gnorm{\eta_{1}(\cdot,t)}^{2}_{s}dt.
+\end{align*}
+
+Thus, we expect that the operator $K$ is regularizing if 
+\begin{equation}
+\frac{1}{T}\int_{0}^{T}\gnorm{\eta_{1}(\cdot,t)}^{2}_{s}dt < \infty, 
+\label{datareg}
+\end{equation}
+which is to say this condition guarantees that the regularity of the data is passed on to the principal components.  Moreover, letting $\varphi$ be an eigenvector of $K$ leads us to the eigenvalue bound 
+\[
+\left|\lambda \right| \leq \frac{1}{T}\int_{0}^{T}\gnorm{\eta_{1}(\cdot,t)}^{2}_{2}dt.
+\]
+
+We might need an $L_{1}(\mathbb{R})$ estimate on our eigenfunctions.  Thus, we estimate
+\begin{align*}
+\gnorm{K\varphi}_{1} \leq & \gnorm{\varphi}_{2}\int_{\mathbb{R}}\left(\int_{\mathbb{R}}\left|\left<\eta_{1}(\xi,\cdot)\eta^{\ast}(\xi^{'},\cdot)\right>\right|^{2}d\xi^{'}\right)^{1/2}d\xi\\
+\leq & \frac{\gnorm{\varphi}_{2}}{T}\int_{\mathbb{R}}\int_{0}^{T}\left|\eta_{1}(\xi,t)\right| \gnorm{\eta_{1}(\cdot,t)}_{2}dt d\xi \\
+\leq & \frac{\gnorm{\varphi}_{2}}{T}\int_{0}^{T}\gnorm{\eta_{1}(\cdot,t)}_{1} \gnorm{\eta_{1}(\cdot,t)}_{2}dt, 
+\end{align*}
+which shows us that data in $L_{1}(\mathbb{R})$ gives us eigenfunctions in the same space.  
+\section*{Building Frames from Principal Components}
+Assuming our data regularity requirement, i.e. Equation \eqref{datareg} holds, we now determine conditions which ensures that an eigenfunction of $K$ can be used to build a frame for a mutli-resolution analysis (MRA).  We remind ourselves though that the primary principal component vector $\varphi(\xi)$ in fact corresponds to a slowly varying function $\varphi(\epsilon x)$.  Letting $\epsilon = 2^{-J}$ for the ease of computation and exposition, we see by choosing the foundation for the scaling function of an MRA to be $\varphi(x)$ that we are building a discrete wavelet transformation (DWT) whose coarsest scales correspond to the leading-order approximations used to derive the NLS approximation.  Thus we are building an MRA specifically designed to identify fast scales relative to the slow amplitude approximation and all intermediary scales in between.  This makes a potential DWT into a highly effective band-pass filter.  
+
+Thus, we need to show there exist positive constants $A$ and $B$ such that 
+\[
+A \leq \sum_{m} \left|\hat{\varphi}(k + 2\pi m) \right|^{2} \leq B. 
+\]
+Taking then the definition of the $s^{th}$-Sobolev norm so that 
+\begin{align*}
+\gnorm{\varphi}^{2}_{s} = & \frac{1}{2\pi}\int_{\mathbb{R}}\left(1+k^{2}\right)^{s}\left|\hat{\varphi}(k)\right|^{2}dk\\
+= & \frac{1}{2\pi}\sum_{m}\int_{0}^{2\pi} \left(1 + (k+2\pi m)^{2} \right)^{s}\left|\hat{\varphi}(k+2\pi m) \right|^{2}dk,
+\end{align*}
+which given the positivity of all terms involved gives us that the function 
+\[
+\Gamma_{s}(k) = \sum_{m}\left(1 + (k+2\pi m)^{2} \right)^{s}\left|\hat{\varphi}(k+2\pi m) \right|^{2}
+\]
+is in $L_{1}([0,2\pi])$ if $\varphi \in H^{s}(\mathbb{R})$.  Moreover, we see that the Fourier-average of the $2\pi$-periodic function $\Gamma_{s}(k)$ is $\gnorm{\varphi}_{s}^{2}$.   The $L_{1}$ convergence ensures that $\Gamma_{s}(k)$ exists except possibly on a set of Lebesgue-measure zero.  Thus, for almost all $k$, we have that for a chosen value of $\tilde{\epsilon}>0$ there is some integer $M>0$ such that 
+\[
+\left|\hat{\varphi}(k+2\pi m) \right|^{2} \leq \frac{\tilde{\epsilon}}{\left(1+(k+2\pi m)^{2}\right)^{s}}, ~ |m|>M.
+\]
+We therefore have that so long as $s>1/2$, then the function $\Gamma(k) = \Gamma_{0}(k)$ is defined by a sum which converges uniformly on $[0,2\pi]$, and thus we have the necessary frame bound.  
+
+\section*{From Frames to MRAs}
+In order to generate a fast discrete wavelet decomposition of a signal, we let the primary principal component vector $\varphi(x)$ play the role of scaling function, thereby defining the low-pass filter $\hat{h}(k)$, which is a $2\pi$ periodic function satisfying the equation 
+\[
+\hat{h}(k) = \sqrt{2}\frac{\hat{\varphi}(2k)}{\hat{\varphi}(k)}\frac{\Gamma(k)}{\Gamma(2k)}
+\]
+In turn, the essential feature we need to store associated with filter is its corresponding $l_{2}$ representation, i.e. we need the coefficients $h_{n}$ such that 
+\[
+\hat{h}(k) = \sum_{n} h_{n} e^{-ink},
+\]
+or
+\[
+h_{n} = \frac{1}{2\pi}\int_{0}^{2\pi}e^{ink}\hat{h}(k)dk.
+\]
+This likewise specifies the high-pass filter $\hat{g}(\omega)$ whose $l_{2}$ representation is given by 
+\[
+g_{n} = (-1)^{n-1}h^{\ast}_{-n+1}.
+\]
+
+Since our data on a given signal, say $f(x)$, and the principal component $\varphi(x)$ come from data sampled on an interval $[-L,L]$, we work with interpolated approximations to both of the form
+\[
+f(x) = \sum_{j=0}^{N_{s}-1}f_{j}S_{\delta}(x-x_{j}), ~ \varphi(x) = \sum_{j=0}^{N_{s}-1} \varphi_{j}S_{\delta}(x-x_{j}), 
+\]
+where we sample at the the equispaced points $x_{j} = -L+j\delta $, $\delta = 2L/N_{s}$, and $S_{\delta }(x)$ is given by 
+\[
+S_{\delta}(x) = \mbox{sinc}\left(\frac{\pi}{\delta} x\right).
+\]
+This in turn gives us the approximations 
+\[
+\hat{f}(k) = \delta B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}f_{j}e^{-ikx_{j}}, ~ \hat{\varphi}(k) = \delta B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}\varphi_{j}e^{-ikx_{j}},
+\]
+where $B(k)$ is given by 
+\[
+B(k) = \left\{
+\ba{rl}
+1 & |k| \leq 1, \\ 
+0 & |k| > 1.
+\ea
+\right.
+\]
+We then have the interpolatory approximation
+\[
+\Gamma^{2}(k) = \delta^{2}\left\{\ba{rl}
+\sum_{j,l}\varphi_{j}\varphi^{\ast}_{l}(-1)^{j-l}\frac{1}{2\cos\left(\frac{\pi(j-l)}{2M}\right)} & k = 0\\
+&\\
+2M\gnorm{\vec{\varphi}}^{2}  & k \neq 0
+\ea
+\right.
+\]
+where we have fixed $0\leq k < 2\pi$ and $\frac{1}{2\delta} = M \in \mathbb{Z}^{+}$, and we choose $M \geq 2$.
+
+%\[
+%S(x;k) = \frac{e^{ikx}}{\sin\left(\pi x\right)}\left\{\begin{array}{rl} e^{-i \pi x}\sin\left(2\pi Mx\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\ 
+%&\\
+%\sin\left(2\pi (M+1/2)x\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\
+%& \\
+%e^{-2\pi ix} \sin\left(2\pi (M+1/2)x\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
+%& \\ 
+%e^{-i\pi x} \sin\left(2\pi (M+1)x\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
+%\end{array}\right.
+%\]
+%and where
+%\[
+%\frac{1}{2\delta} = M + \tilde{\theta}, ~ M = \left\lfloor \frac{1}{2\delta}\right\rfloor, ~ 0\leq \tilde{\theta} < 1.
+%\]
+
+With $\Gamma(k)$ computed, we can find the rescaled wavelet function at discretized nodes $x_{m}$ is given by 
+\[
+\tilde{\varphi}_{m} = \sum_{l=0}^{N_{s}-1}\varphi_{l}K(m-l), ~ K(n) = \frac{1}{2\pi}\int_{-\pi}^{\pi} \frac{1}{\Gamma\left(\frac{k}{\delta}\right)}e^{ink}dk.
+\]
+We can then find the initial approximation coefficients via the formula
+\begin{align*}
+a^{(0)}_{n} = & \int_{\mathbb{R}}f(x)\tilde{\varphi}(x-n)dx, \\
+= & \frac{1}{2\pi}\int_{\mathbb{R}}\hat{f}(k)\frac{\hat{\varphi}^{\ast}(k)}{\Gamma(k)}e^{ikn}dk,\\
+= & \delta \sum_{j,l}f_{j}\varphi^{\ast}_{l}\tilde{K}(j-l;n), ~ \tilde{K}(m;n) = \frac{1}{2\pi}\int_{-\pi}^{\pi}e^{-ikm} \frac{e^{ikn/\delta}}{\Gamma(k/\delta)}dk.
+\end{align*}
+
+\end{document}

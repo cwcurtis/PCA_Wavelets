@@ -1,0 +1,179 @@
+\documentclass[aps,prl,preprint,groupedaddress]{revtex4-1}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\epstopdfsetup{update}
+%\usepackage{caption}
+%\usepackage{subcaption}
+
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+
+\newcommand{\bc}{\begin{center}}
+\newcommand{\ec}{\end{center}}
+
+\newcommand{\ds}{\displaystyle}
+
+\newcommand{\bt}{\begin{tabular}}
+\newcommand{\et}{\end{tabular}}
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
+\newcommand{\bd}{\begin{description}}
+\newcommand{\ed}{\end{description}}
+
+\newcommand{\bp}{\begin{pmatrix}}
+\newcommand{\ep}{\end{pmatrix}}
+
+\newcommand{\pd}{\partial}
+\newcommand{\sech}{\mbox{sech}}
+
+\newcommand{\cf}{{\it cf.}~}
+
+\newcommand{\ltwo}{L_{2}(\mathbb{R}^{2})}
+\newcommand{\smooth}{C^{\infty}_{0}(\mathbb{R}^{2})}
+
+\newcommand{\br}{{\bf r}}
+\newcommand{\bk}{{\bf k}}
+\newcommand{\bv}{{\bf v}}
+
+\newcommand{\gnorm}[1]{\left|\left| #1\right|\right|}
+\newcommand{\ipro}[2]{\left<#1,#2 \right>}
+\title{The Statistical Mechanics of the Dynamic-Mode Decomposition}
+\begin{document}
+\section*{Introduction}
+
+We study PDE's which can be written in the Hamiltonian/variational form
+\[
+u_{t} = J\frac{\delta H}{\delta u}.
+\]
+Using a generalized-Fourier expansion so that 
+\[
+u({\bf x},t) = \sum_{{\bf m}}a_{{\bf m}}(t) e_{{\bf m}}({\bf x}), ~ \left<e_{{\bf k}},e_{{\bf j}}\right> = \delta_{{\bf k},{\bf j}}
+\]
+we then see, requiring the Hamiltonian to remain invariant over solution curves that
+\[
+\sum_{{\bf m}} \left<\frac{\delta H}{\delta u}, e_{{\bf m}} \right>\pd_{t}a^{\ast}_{{\bf m}} = 0.
+\]
+Noting that 
+\[
+\pd_{t}a_{{\bf m}}\left(t\right) = \left<J \frac{\delta H}{\delta u}\left( u \right),e_{\bf m}\right>.
+\]
+and supposing that $J$ is skew-adjoint with respect to the inner product, and moreover that the modes $e_{{\bf m}}$ are also eigenfunctions of $J$ so that 
+\[
+Je_{{\bf m}} = \gamma_{{\bf m}}e_{{\bf m}}, ~ \mbox{Re}(\gamma_{{\bf m}}) = 0, 
+\]
+then gives us the general symmetry-requirement
+\[
+\sum_{{\bf m}} \gamma_{{\bf m}}\left|\left<\frac{\delta H}{\delta u}, e_{{\bf m}} \right>\right|^{2} = 0.
+\]
+In order to satisfy this, we see that some number of modes must exist in a symmetric relationship with one another so as to make the above sum cancel.  These modes would in effect form the constituents necessary to identify the coordinate transformations necessary to reduce the modal problem to canonical form.  
+
+To reduce the problem to one in a finite number of dimensions, we introduce the projection operator $P_{K}$, and we then study the affiliated dynmaical system
+\[
+\pd_{t}a_{{\bf m}}\left(t\right) = \left<J P_{K}\frac{\delta H}{\delta u}\left( P_{K}u \right),e_{\bf m}\right>.
+\]
+While it may in general not be readily possible to show that the reduced dynamical system is still Hamiltonian, we see that the divergence of the reduced vector-field is given by
+\[
+\nabla_{a_{{\bf m}}} \cdot \left<JP_{K}\frac{\delta H}{\delta u}\left(P_{K} u \right),e_{\bf m}\right> = -\sum_{{\bf m}}\gamma^{\ast}_{{\bf m}}\left<\frac{\delta^{2} H}{\delta u^{2}}(P_{K}u)e_{{\bf m}},e_{{\bf m}} \right>.
+\]
+Skew-adointness of $J$, self-adjointness of the second variation of the Hamiltonian, and a modicum of symmetry requirements of the modes $e_{{\bf m}}$ guarantee then that the divergence vanishes for all $K$ and thus the vector-field posseses the Liouville property.  Likewise, we readily see that $H$ remains a conserved quantity of the flow so long as the truncation respects the necessary symmetries which gave us conservation of the Hamiltonian in the infinite-dimesional case.  
+
+As is typical, we further suppose there is another conserved quantity of the flow, which we generically denote as the `particle number' $N({\bf a})$.  This corresponds to the requirement
+\[
+\sum_{{\bf m}}\gamma_{{\bf m}} \left<\frac{\delta N}{\delta u}, e_{{\bf m}} \right> \left<e_{{\bf m}},\frac{\delta H}{\delta u} \right> = 0.
+\]
+Thus, we see yet another shared symmetry requirement which needs to be respected by truncation so $N$ is conserved along the finite-dimensional flow as well.  Affiliated with the second conserved quantity $N$ is a symmetry operator $T(s)$ which is a representation of an element $s\in G$ with $G$ the Lie Group symmetry in question.  This motivates the study of generalized `traveling-wave solutions' of the Hamiltonian system, which have the form $T(\lambda t)\tilde{u}({\bf x})$, so that $\tilde{u}({\bf x})$ is a stationary solution of the affiliated nonlinear equation
+\begin{equation}
+\frac{\delta H}{\delta u} - \lambda \frac{\delta N}{\delta u} = 0.
+\label{varpb}
+\end{equation}
+Correspondingly, letting $J$ commute with $T(s)$, we can find the symmetry operator from the dynamical system
+\[
+T'(s) = T(s)T'(0), 
+\]
+and in turn we see that the conserved quantity is formally given by the quantity
+\[
+N(u) = \left<J^{-1}T'(0)u ,u\right>.
+\]
+\section*{Statistical Mechanics}
+
+Fixing $K$ then, following the approach summarized in \cite{majda}, for given probability distribution $\rho$ if we define its entropy to be 
+\[
+S(\rho) = -\int \rho({\bf a})\log\rho({\bf a}) d {\bf a}
+\]
+then maximizing this with respect to the canonical ensemble constraints 
+\[
+\int H({\bf a},K)\rho({\bf a})d{\bf a} = H_{0}(K), ~ \int N({\bf a},K)\rho({\bf a})d{\bf a} = N_{0}(K)
+\]
+then gives us the canonical ensemble 
+\[
+\rho_{\beta,\mu}({\bf a};K) = e^{-\beta(H({\bf a};K) -\lambda N({\bf a};K))}/Z, ~ {\bf a} \in \mathbb{C}^{(2K+1)^{2}},
+\]
+where $\beta$ and $\lambda$ are the corresponding Lagrange multipliers affiliated with the optimization procedure and $Z$ is the normalization constant.  Following \cite{chorin}, this gives us an average $\mathbb{E}[f]$ where 
+\[
+\mathbb{E}[f] = \int_{\mathbb{C}^{(2K+1)^{2}}} f({\bf a})\rho_{\beta,\mu}({\bf a})d{\bf a}.
+\]
+From the density we can define an invariant measure $\mu$, which allows us to readily define the affiliated Hilbert space $L_{2}(\mathbb{C}^{(2K+1)^{2}},\mu)$ with inner product $\left<f,g\right> = \mathbb{E}[fg]$.  
+
+Being somewhat formal, if we suppose that $\tilde{{\bf a}}_{K}$ denotes an equilibrium solution of the truncated version of the shifted variational problem \eqref{varpb}, then we see that if we let ${\bf a} = \tilde{{\bf a}}_{K} + {\bf v}$, we have that
+\[
+\mathbb{E}[{\bf a}] = \tilde{{\bf a}}_{K} + \frac{1}{Z}\int {\bf v}e^{-\beta\left<\left(\frac{\delta^{2}(H-\lambda N)}{\delta {\bf a}^{2}}\right){\bf v},{\bf v} \right>}d{\bf v},
+\]
+where in truncating the argument in the exponential, we have implicitly used Taylor's theorem with remainder.  Thus, if we have the necessary stability properties to ensure the above quadratic form is positive along all directions, then we have that
+\[
+\mathbb{E}[{\bf a}] = \tilde{{\bf a}}_{K}.
+\]
+This reproduces the celebrated result that stable absolute minimizers of adjusted Hamiltonians are the mean of an affiliated flow.  
+
+However, relative to the dynamics of the truncated system, we see that modes are not stationary, instead being described via the evolution of the symmetry semi-group operator so that the `mean-flow' is given by $T(\lambda t) \tilde{{\bf a}}_{K}$.  Note, were we to attempt to use an ergodic-hypothesis to find the appropriate mean, we would need to a priori know $\lambda$ so that we could find 
+\[
+\tilde{{\bf a}}_{K} = \lim_{T\rightarrow \infty}\frac{1}{T}\int_{T_{0}}^{T_{0}+T} T(-\lambda t){\bf a}(t) dt.
+\]
+That is to say our temporal averages would need to factor out the time evolution of the symmetry semi-group.  
+
+\section*{DMD and Thermodynamic Equilibrium}
+Using the method of characteristics, we can define for our flow the associated Liouville operator $\mathcal{L}$ so that the solution to the equation
+\[
+u_{t} = \mathcal{L}u, ~ u({\bf a}_{0},0) = g({\bf a}_{0}) \in L_{2}(\mathbb{C}^{(2K+1)^{2}},\mu),
+\]
+has the solution
+\[
+u({\bf a}_{0},t) = e^{\mathcal{L}t}g({\bf a}_{0}) = g(\varphi(t,{\bf a}_{0})).  
+\]
+Using the semigroup property of $e^{\mathcal{L}t}$ and $\varphi$, we see that by choosing a fixed timestep $\delta t$, we have 
+\[
+g(\varphi(t+\delta t,{\bf a}_{0}))= e^{\mathcal{L}\delta t} g(\varphi(t,{\bf a}_{0})).
+\]
+Thus, for any reasonably defined quantity $g$, there exists a linear operator $e^{\mathcal{L}\delta t}$ which transports that quantity forward in discrete steps of time. If the underlying finite-dimensional system is also Hamiltonian this ensures that $e^{\mathcal{L}\delta t}$ is a unitary operator, which is to say that it preserves the $L_{2}(\mathbb{C}^{(2K+1)^{2}},\mu)$-norm of a given function.  Generalizations of this approach are found in \cite{mezic1,williams,kutz} and elsewhere.  
+
+Seperating the flow then into mean and fluctuation so that 
+\[
+{\bf a}(t) = T(\lambda t)\left(\tilde{{\bf a}}_{K} + \tilde{{\bf a}}_{K}^{(F)}(t)\right), ~ \mathbb{E}\left[\tilde{{\bf a}}_{K}^{(F)}(t)\right] = 0
+\]
+we see that 
+\begin{align*}
+{\bf a}(t+\delta t) = & e^{\mathcal{L}\delta t}{\bf a}(t)\\\
+= &e^{\mathcal{L}\delta t}\left( T(\lambda t)\tilde{{\bf a}}_{K} + T(\lambda t)\tilde{{\bf a}}_{K}^{(F)}(t)\right)\\
+= & T(\lambda (t+\delta t))\tilde{{\bf a}}_{K} + e^{\mathcal{L}\delta t}T(\lambda t)\tilde{{\bf a}}_{K}^{(F)}(t), 
+\end{align*}
+and thus we have that 
+\[
+T\left(\lambda \delta t\right)\tilde{{\bf a}}^{(F)}_{K}(t+\delta t) = e^{\mathcal{L}\delta t}\tilde{{\bf a}}_{K}^{(F)}(t),
+\]
+or 
+\[
+\tilde{{\bf a}}^{(F)}_{K}(t+\delta t) = T(-\lambda \delta t) e^{\mathcal{L}\delta t}\tilde{{\bf a}}_{K}^{(F)}(t),
+\]
+which is consistent with the form of the Liouville operator.  Thus the Koopman operator factors across the mean and fluctuations of the time-evolving flow.  
+\bibliography{wwt}
+\bibliographystyle{unsrt}
+
+\end{document}
