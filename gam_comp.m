@@ -1,22 +1,25 @@
 % This function generates the Gamma function used throughout the algorithm.
+%odx = 1/(2*dx);
+%M = floor(odx);
+%tht = odx - M;
+    
+function gam = gam_comp(dx,vphi,Ncp,M,tht,kval)
 
-function gam = gam_comp(dx,vphi,Ncp)
-
-    tpi = 2*pi;    
-    M = 1/(2*dx);
-    gam = linspace(0,tpi,Ncp+1);
-    gam = gam(1:end-1)';
-    gam2 = 2*gam;
+    tpi = 2*pi;
+    krsc = kval/tpi;
+    Nvls = dx*(1:Ncp-1);
+    sNvls = dx./sin(pi*Nvls);
     
-    Svec = [(M+1/2) sin(pi*(1+1/(2*M))*(1:Ncp-1))./sin(pi*(1:Ncp-1)/M)]; 
-    Skn0 = dx*sqrt(2*M)*norm(vphi);
-    Sk0 = dx*sqrt(real(vphi'*toeplitz(Svec)*vphi));
+    if (krsc<tht) && (krsc+tht<1)
+        Svec = exp(-1i*(kval-pi)*[0 Nvls]).*[dx*2*M sNvls.*sin(tpi*M*Nvls)];
+    elseif (krsc<tht) && (krsc+tht>=1)
+        Svec = exp(-1i*kval*[0 Nvls]).*[dx*2*(M+1/2) sNvls.*sin(tpi*(M+1/2)*Nvls)];
+    elseif (krsc>=tht) && (krsc+tht<1)
+        Svec = exp(-1i*(kval-tpi)*[0 Nvls]).*[dx*2*(M+1/2) sNvls.*sin(tpi*(M+1/2)*Nvls)];
+    else
+        Svec = exp(-1i*(kval-pi)*[0 Nvls]).*[dx*2*(M+1) sNvls.*sin(tpi*(M+1)*Nvls)];
+    end
     
-    gam(1) = Sk0;
-    gam(2:end) = Skn0;
-    
-    gam2(1) = Sk0;
-    gam2()
-    gam2(logical(1-zinds)) = Skn0;
+    gam = sqrt(real(vphi'*(toeplitz(Svec)*vphi)));
     
 end

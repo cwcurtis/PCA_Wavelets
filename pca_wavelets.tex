@@ -82,7 +82,7 @@ where
 \begin{equation*}
 \theta = k_{0}x + \Omega t, ~ \xi = \epsilon(x + c_{g}t), ~ \tau = \epsilon^{2}t.
 \end{equation*}
-Following the usual path, we then get 
+Following the usual approximation arguments, we then get 
 \begin{equation*}
 \Omega_{\pm}(k_{0})  = \pm \sqrt{|k_{0}|(1+\tilde{\sigma}k_{0}^{2})},
 \end{equation*}
@@ -119,7 +119,7 @@ we also see we should choose $\eta_{1}(x,0)$ so that
 \[
 \int_{\mathbb{R}}dx \eta_{1}(x,0)e^{ik_{0}x/\epsilon} = 0.
 \]
-Note, while these assumptions on initial conditions are somewhat restrictive, they reflect the particular of the approximation which led us to the NLS equation.  Other approximation schemes certainly exist which relax these conditions.  
+Note, while these assumptions on initial conditions are somewhat restrictive, they reflect the particulars of the approximation which led us to the NLS equation.  Other approximation schemes certainly exist which relax these conditions.  
 
 Starting from this initial data then, we are able either numerically, or even analytically in some cases, to generate an affiliated NLS flow given by $\eta_{1}(\xi,\tau)$, $0\leq \tau \leq T$.  We then discretely sample this signal in time, say at time steps $\tau_{j} = j\delta \tau$, $j=0,\cdots,N_{T}-1$, $T = N_{T}\delta t$, thereby generating the $N_{T}$ spatial functions $\eta_{1j}(\xi) = \eta_{1}(\xi,\tau_{j})$. This motivates defining the {\it empirical measure} $\mu(A)$ where $A\subset L_{2}(\mathbb{R})$ is a Borel set (defined using the norm $\left|\left|\cdot\right|\right|_{2}$ on $L_{2}(\mathbb{R})$) and 
 \[
@@ -247,7 +247,7 @@ or
 \[
 h_{n} = \frac{1}{2\pi}\int_{0}^{2\pi}e^{ink}\hat{h}(k)dk.
 \]
-This likewise specifies the high-pass filter $\hat{g}(\omega)$ whose $l_{2}$ representation is given by 
+This likewise specifies the high-pass filter $\hat{g}(k)$ whose $l_{2}$ representation is given by 
 \[
 g_{n} = (-1)^{n-1}h^{\ast}_{-n+1}.
 \]
@@ -258,11 +258,11 @@ f(x) = \sum_{j=0}^{N_{s}-1}f_{j}S_{\delta}(x-x_{j}), ~ \varphi(x) = \sum_{j=0}^{
 \]
 where we sample at the the equispaced points $x_{j} = -L+j\delta $, $\delta = 2L/N_{s}$, and $S_{\delta }(x)$ is given by 
 \[
-S_{\delta}(x) = \mbox{sinc}\left(\frac{\pi}{\delta} x\right).
+S_{\delta}(x) = \frac{1}{\sqrt{\delta}}\mbox{sinc}\left(\frac{\pi}{\delta} x\right).
 \]
 This in turn gives us the approximations 
 \[
-\hat{f}(k) = \delta B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}f_{j}e^{-ikx_{j}}, ~ \hat{\varphi}(k) = \delta B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}\varphi_{j}e^{-ikx_{j}},
+\hat{f}(k) = \sqrt{\delta} B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}f_{j}e^{-ikx_{j}}, ~ \hat{\varphi}(k) = \sqrt{\delta} B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}\varphi_{j}e^{-ikx_{j}},
 \]
 where $B(k)$ is given by 
 \[
@@ -273,41 +273,36 @@ B(k) = \left\{
 \ea
 \right.
 \]
-We then have the interpolatory approximation
+If we fix $0\leq k < 2\pi$, then we can readily show that for $M_{2}\geq M_{1}$,
 \[
-\Gamma^{2}(k) = \delta^{2}\left\{\ba{rl}
-\sum_{j,l}\varphi_{j}\varphi^{\ast}_{l}(-1)^{j-l}\frac{1}{2\cos\left(\frac{\pi(j-l)}{2M}\right)} & k = 0\\
-&\\
-2M\gnorm{\vec{\varphi}}^{2}  & k \neq 0
-\ea
-\right.
+\sum_{m=-M_{2}}^{M_{1}}e^{-im\theta_{n}} = e^{i(M_{2}-M_{1})\theta/2}\frac{\sin\left((M_{1}+M_{2}+1)\theta_{n}/2\right)}{\sin\left(\theta_{n}/2\right)}, ~ \theta_{n} = 2\pi \delta n
 \]
-where we have fixed $0\leq k < 2\pi$ and $\frac{1}{2\delta} = M \in \mathbb{Z}^{+}$, and we choose $M \geq 2$.
-
-%\[
-%S(x;k) = \frac{e^{ikx}}{\sin\left(\pi x\right)}\left\{\begin{array}{rl} e^{-i \pi x}\sin\left(2\pi Mx\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\ 
-%&\\
-%\sin\left(2\pi (M+1/2)x\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\
-%& \\
-%e^{-2\pi ix} \sin\left(2\pi (M+1/2)x\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
-%& \\ 
-%e^{-i\pi x} \sin\left(2\pi (M+1)x\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
-%\end{array}\right.
-%\]
-%and where
-%\[
-%\frac{1}{2\delta} = M + \tilde{\theta}, ~ M = \left\lfloor \frac{1}{2\delta}\right\rfloor, ~ 0\leq \tilde{\theta} < 1.
-%\]
+then letting $1/(2\delta) = M + \tilde{\theta}$, $M\in\mathbb{Z}^{+}$, we see 
+\[
+\Gamma^{2}(k) = \sum_{j,l}\varphi_{j}\varphi^{\ast}_{l}S(j-l;k)
+\]
+where
+\[
+S(n;k) = \frac{\delta e^{i \delta k n}}{\sin\left(\pi \delta n\right)}\left\{\begin{array}{rl} e^{-i \pi \delta n}\sin\left(2\pi \delta Mn\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\ 
+&\\
+\sin\left(2\pi \delta (M+1/2)n\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\
+& \\
+e^{-2\pi \delta i n} \sin\left(2\pi \delta (M+1/2) n\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
+& \\ 
+e^{-i\pi \delta n} \sin\left(2\pi \delta (M+1) n\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
+\end{array}\right.
+\]
 
 With $\Gamma(k)$ computed, we can find the rescaled wavelet function at discretized nodes $x_{m}$ is given by 
 \[
-\tilde{\varphi}_{m} = \sum_{l=0}^{N_{s}-1}\varphi_{l}K(m-l), ~ K(n) = \frac{1}{2\pi}\int_{-\pi}^{\pi} \frac{1}{\Gamma\left(\frac{k}{\delta}\right)}e^{ink}dk.
+\tilde{\varphi}_{m} = \sum_{l=0}^{N_{s}-1}\varphi_{l}K(m-l), ~ K(n) = \frac{1}{2\pi}\int_{0}^{2\pi} \frac{1}{\Gamma\left(\frac{k}{\delta}\right)}e^{ink}dk.
 \]
 We can then find the initial approximation coefficients via the formula
 \begin{align*}
-a^{(0)}_{n} = & \int_{\mathbb{R}}f(x)\tilde{\varphi}(x-n)dx, \\
-= & \frac{1}{2\pi}\int_{\mathbb{R}}\hat{f}(k)\frac{\hat{\varphi}^{\ast}(k)}{\Gamma(k)}e^{ikn}dk,\\
-= & \delta \sum_{j,l}f_{j}\varphi^{\ast}_{l}\tilde{K}(j-l;n), ~ \tilde{K}(m;n) = \frac{1}{2\pi}\int_{-\pi}^{\pi}e^{-ikm} \frac{e^{ikn/\delta}}{\Gamma(k/\delta)}dk.
+a^{(0)}_{n} = & \int_{\mathbb{R}}f(x)\tilde{\varphi}^{\ast}(x-n)dx, \\
+= & \frac{1}{2\pi}\int_{\mathbb{R}}\hat{f}(k) \hat{\tilde{\varphi}}^{\ast}(k)e^{ikn}dk,\\
+= & \delta \sum_{j,l}f_{j}\tilde{\varphi}^{\ast}_{l}\tilde{K}(j-l;n), ~ \tilde{K}(m;n) = \frac{(-1)^{m}}{1-\delta m/n}\mbox{sinc}\left(\frac{\pi n}{\delta}\right).
 \end{align*}
+\section*{Results}
 
 \end{document}
