@@ -1,4 +1,4 @@
-function nfin = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
+function [nfin,hflt] = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
     % K - number of modes in spatial Fourier series.  Typically K=128 will
     % do.
     
@@ -56,9 +56,18 @@ function nfin = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
             + exp(-(Kmesh-2*k0).^2/(4.*stdv)).*exp(2*pi*1i*rand(KT,1)) );
           
     noise = 2*sqrt(2*ad/anl)*real(ifft(noise));
-    etan = fft(2*real(etan) + noise/sqrt(ep));
-    qn = fft(2*real(qn) + noise/sqrt(ep));
-    n0 = .5*()
+    etanp = 2*real(etan) + noise/sqrt(ep);
+    qnp = 2*real(qn) + noise/sqrt(ep);
+    etan = fft(etanp);
+    qn = fft(qnp);
+    
+    n0 = .5*(etanp + 1i*abs(k0)*qnp/Om).*exp(-1i*k0*Xmesh);
+    dmode = nls_solver(ad,anl,n0,K,Llx*ep,tf*ep^2);
+    figure(1)
+    plot(Xmesh,abs(dmode))
+    nlvls = -log2(ep);
+    hflt = filter_maker(dmode,Llx,2^nlvls);
+    
     % Generic ICs
     % etan = fft(cos(k0*Xmesh).*sech(ep*Xmesh));
     % qn = fft(sin(k0*Xmesh).*sech(ep*Xmesh));

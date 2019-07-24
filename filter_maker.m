@@ -1,27 +1,18 @@
-function hflt = filter_maker(vphi,Llx,Nkp)
+function hflt = filter_maker(vphi,Llx,K)
     % Nkp = 2^J, where J is the number of levels in the MRA
-    
+    KT = 2*K;
     Ncp = length(vphi);
     dx = 2*Llx/Ncp;
-    dk = 2*pi/Nkp;
-    tpi = 2*pi;    
-    odx = 1/(2*dx);
-    M = floor(odx);
-    tht = odx - M;
+    odx = pi/(2*dx);
     
-    Xmesh = (-Llx:dx:Llx-dx)';
-    Kmesh = (0:dk:tpi-dk)';
+    Xmesh = (-Llx:dx:Llx-dx);
+    rphi = phirscl(vphi,Llx,Ncp);
+    smat = repmat(Xmesh,Ncp,1) - 2*repmat(Xmesh',1,Ncp);
+    hflt = zeros(KT,1);
     
-    gvec = zeros(Nkp,1);
-    for jj = 1:Nkp
-        gvec(jj) = gam_comp(dx,vphi,Ncp,M,tht,Kmesh(jj));
+    for nn = 1:KT
+        pmat = sinc(odx*( (nn-K) + smat ) );
+        hflt(nn) = rphi'*(pmat*rphi)/sqrt(2);
     end
-    gdvec = [gvec(1:2:end-1);gvec(1:2:end-1)];
-    gtot = gdvec./gvec;
-    
-    Kmat = exp(-1i*Kmesh*Xmesh');
-    Kmat2 = exp(-1i*2*Kmesh*Xmesh');
-    
-    hflt = sqrt(2)*ifft(((Kmat2*vphi)./(Kmat*vphi)).*gtot);
     
 end

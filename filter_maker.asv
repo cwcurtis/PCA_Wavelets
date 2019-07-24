@@ -1,0 +1,22 @@
+function hflt = filter_maker(vphi,Llx,K)
+    % Nkp = 2^J, where J is the number of levels in the MRA
+    
+    Ncp = length(vphi);
+    dx = 2*Llx/Ncp;
+    dk = 2*pi/(2*K);
+    tpi = 2*pi;    
+    odx = 1/(2*dx);
+    M = floor(odx);
+    tht = odx - M;
+    
+    Xmesh = (-Llx:dx:Llx-dx);
+    Kmesh = (0:dk:tpi-dk)';
+    
+    rphi = phirscl(vphi,Llx,Nkp);
+    smat = repmat(Xmesh,Ncp,1) - 2*repmat(Xmesh',1,Ncp);
+    hflt = zeros(2*K,1);
+    for nn = -K+1:K
+        pmat = sinc(pi/(2*dx)*( nn + smat ) );
+        hflt()
+    end
+end

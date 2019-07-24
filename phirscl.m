@@ -11,11 +11,13 @@ function rphi = phirscl(vphi,Llx,Nkp)
     Kmesh = (0:dk:tpi-dk)';
     gvec = zeros(Nkp,1);
     for jj = 1:Nkp
-        gvec(jj) = gam_comp(dx,vphi,Ncp,M,tht,Kmesh(jj)/dx);
+        kval = mod(Kmesh(jj)/dx,tpi);
+        gvec(jj) = gam_comp(dx,vphi,Ncp,M,tht,kval);
     end
     
     Kvec = ifft(1./gvec);
     rphi = toeplitz(Kvec')*vphi;
-    
+    disp(max(abs(imag(rphi))))
+    rphi = real(rphi);
 end
 

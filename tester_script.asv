@@ -12,16 +12,11 @@ function tester_script(Llx,K,k0,ep,sig,tf,dt)
     figure(1)
     plot(Xmesh,nfin,'k-','LineWidth',2)
     
-    lstp = 1;
-    rstp = KT/2^(nlvls);
-    tot = KT/2^(nlvls);
-        
     for jj=1:nlvls
-        figure(jj+1)
-        plot(1:tot,dwtc(lstp:rstp),'k-','LineWidth',2)
-        tot = tot*2;
-        lstp = rstp + 1;
-        rstp = lstp - 1 + tot;
+    
+        figure(2)
+        plot(1:KT/2^nlvls,dwtc(1:KT/2^nlvls),'k-','LineWidth',2)
+        
     end
     
     

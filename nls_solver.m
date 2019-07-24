@@ -1,7 +1,6 @@
 function dmode = nls_solver(ad,anl,n0,K,Llx,tf)
 
-    dt = .01;
-    
+    dt = 5e-3;
     nsteps = floor(tf/dt);
     nsol = zeros(2*K,nsteps+1);
     
@@ -9,7 +8,7 @@ function dmode = nls_solver(ad,anl,n0,K,Llx,tf)
     Linv = (1 - 1i*3*dt/4*ad*Kmesh.^2).^(-1);
 
     nnm1 = n0;
-    nsol(:,1) = n0;
+    nsol(:,1) = ifft(n0);
     nphys = ifft(n0);
     nln = 1i*anl*fft(nphys.^2.*conj(nphys));
     
@@ -19,7 +18,7 @@ function dmode = nls_solver(ad,anl,n0,K,Llx,tf)
     
     for jj=1:nsteps
         nphys = ifft(n0);
-        nln = 1i*anl*fft(nphys.^2.*conj(nphys));
+        nln = 1i*anl*fft((nphys.^2).*conj(nphys));
         nlstp = 55/24*nln - 59/24*nlnm1 + 37/24*nlnm2 - 3/8*nlnm3;    
         np1 = Linv.*(n0 + nnm1/3 + dt*nlstp) - nnm1/3;
         nnm1 = n0;
@@ -27,5 +26,7 @@ function dmode = nls_solver(ad,anl,n0,K,Llx,tf)
         nsol(:,jj+1) = ifft(n0);
     end
     
-    [U,~,~] = svd(nsol);
+    [U,S,~] = svd(nsol);
+    Sd = diag(S);
+    mSd = max(Sd);
     dmode = U(:,1);
