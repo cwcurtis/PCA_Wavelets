@@ -4,20 +4,25 @@ function tester_script(Llx,K,k0,ep,sig,tf,dt)
     nlvls = -log2(ep);
     KT = 2*K;
     slvls = KT;
+    dk = 2*pi/KT;
+    dx = 2*Llx/KT;
     Xmesh = linspace(-Llx,Llx,KT+1);
     Xmesh = Xmesh(1:KT)';
+    Kmesh = (-pi:dk:pi-dk);
+    Nvals = (-K+1:K);
+    Kmat = exp(-1i*Kmesh'*Nvals);
+    
     gflt = (-1).^(-K+1:K)'.*flipud(hflt);
     gflt = [gflt(end);gflt(1:end-1)];
-    hfun = sqrt(KT)*fft(fftshift(hflt));
-    gfun = sqrt(KT)*fft(fftshift(gflt));
+    hfun = Kmat*hflt;
+    gfun = exp(-1i*Kmesh').*conj(exp(-1i*(Kmesh+pi)'*Nvals)*hflt);
+    %gfun = fft(fftshift(gflt));
     
     gfltt = qmf(hflt,1);
     gfunt = fft((gfltt));
     %disp(norm(gflt-gfltt))
     figure(1)
     plot(1:KT,abs(hfun).^2 + abs(gfun).^2,'k-','LineWidth',2)
-    figure(2)
-    plot(1:KT,log10(abs(gflt)),'k-','LineWidth',2)
     pause
     %gflt = qmf(hflt,0);
     
