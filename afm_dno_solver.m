@@ -56,16 +56,22 @@ function [nfin,hflt] = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
             + exp(-(Kmesh-2*k0).^2/(4.*stdv)).*exp(2*pi*1i*rand(KT,1)) );
           
     noise = 2*sqrt(2*ad/anl)*real(ifft(noise));
-    etanp = 2*real(etan) + ep*noise;
-    qnp = 2*real(qn) + ep*noise;
+    etanp = 2*real(etan);
+    qnp = 2*real(qn);
     etan = fft(etanp);
     qn = fft(qnp);
     
     n0 = .5*(etanp + 1i*abs(k0)*qnp/Om).*exp(-1i*k0*Xmesh);
-    dmode = nls_solver(ad,anl,fft(n0),K,Llx*ep,tf*ep^2);
-    dmode = 2*real(dmode.*exp(1i*k0*Xmesh));
+    dmode = nls_solver(ad,anl,fft(interpft(n0,2*K*ep)),K*ep,Llx*ep,tf*ep^2);
+    dxf = (2*Llx/KT);
+    fdmode = fst_samp(dmode,KT,ep);
+    fdmode = 2*real(sech(Xmesh).*fdmode.*exp(1i*k0*Xmesh/ep));
     
-    hflt = filter_maker(dmode,Llx,KT);
+    %figure(1)
+    %plot(Xmesh,fdmode,'r-','LineWidth',2)
+    %pause
+    
+    hflt = filter_maker(fdmode,KT,dxf,Llx);
     
     % Generic ICs
     % etan = fft(cos(k0*Xmesh).*sech(ep*Xmesh));

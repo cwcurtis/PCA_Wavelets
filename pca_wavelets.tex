@@ -258,11 +258,11 @@ f(x) = \sum_{j=0}^{N_{s}-1}f_{j}S_{\delta}(x-x_{j}), ~ \varphi(x) = \sum_{j=0}^{
 \]
 where we sample at the the equispaced points $x_{j} = -L+j\delta $, $\delta = 2L/N_{s}$, and $S_{\delta }(x)$ is given by 
 \[
-S_{\delta}(x) = \frac{1}{\sqrt{\delta}}\mbox{sinc}\left(\frac{\pi}{\delta} x\right).
+S_{\delta}(x) = \mbox{sinc}\left(\frac{\pi}{\delta} x\right).
 \]
 This in turn gives us the approximations 
 \[
-\hat{f}(k) = \sqrt{\delta} B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}f_{j}e^{-ikx_{j}}, ~ \hat{\varphi}(k) = \sqrt{\delta} B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}\varphi_{j}e^{-ikx_{j}},
+\hat{f}(k) = \delta B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}f_{j}e^{-ikx_{j}}, ~ \hat{\varphi}(k) = \delta B\left(\frac{\delta}{\pi} k\right)\sum_{j=0}^{N_{s}-1}\varphi_{j}e^{-ikx_{j}},
 \]
 where $B(k)$ is given by 
 \[
@@ -273,29 +273,29 @@ B(k) = \left\{
 \ea
 \right.
 \]
-If we fix $0\leq k < 2\pi$, then we can readily show that for $M_{2}\geq M_{1}$,
+If we fix $-\pi \leq k < \pi$, then we can readily show that,
 \[
-\sum_{m=-M_{2}}^{M_{1}}e^{-im\theta_{n}} = e^{i(M_{2}-M_{1})\theta/2}\frac{\sin\left((M_{1}+M_{2}+1)\theta_{n}/2\right)}{\sin\left(\theta_{n}/2\right)}, ~ \theta_{n} = 2\pi \delta n
+\sum_{m=-M_{2}}^{M_{1}}e^{-im\theta_{n}} = e^{i(M_{2}-M_{1})\theta_{n}/2}\frac{\sin\left((M_{1}+M_{2}+1)\theta_{n}/2\right)}{\sin\left(\theta_{n}/2\right)}, ~ \theta_{n} = 2\pi \delta n
 \]
 then letting $1/(2\delta) = M + \tilde{\theta}$, $M\in\mathbb{Z}^{+}$, we see 
 \[
 \Gamma^{2}(k) = \sum_{j,l}\varphi_{j}\varphi^{\ast}_{l}S(j-l;k)
 \]
-where
+where for $\tilde{k}=k/(2\pi)$, and letting $\tilde{s}=\mbox{sgn}(\tilde{k})$, we have 
 \[
-S(n;k) = \frac{\delta e^{i \delta k n}}{\sin\left(\pi \delta n\right)}\left\{\begin{array}{rl} e^{-i \pi \delta n}\sin\left(2\pi \delta Mn\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\ 
+S(n;k) = \frac{\delta^{2} e^{i \delta k n}}{\sin\left(\pi \delta n\right)}\left\{\begin{array}{rl} e^{-i \pi \tilde{s}\delta n}\sin\left(2\pi \delta Mn\right) & \tilde{\theta} < \left|\tilde{k}\right|, ~  \tilde{\theta} + \left|\tilde{k}\right| < 1\\ 
 &\\
-\sin\left(2\pi \delta (M+1/2)n\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} < 1 \\
+\sin\left(2\pi \delta (M+1/2)n\right) & \tilde{\theta} \geq \left|\tilde{k}\right|, ~  \tilde{\theta} + \left|\tilde{k}\right| < 1 \\
 & \\
-e^{-2\pi \delta i n} \sin\left(2\pi \delta (M+1/2) n\right) & \tilde{\theta} < \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
+e^{-2\pi i \tilde{s}\delta n} \sin\left(2\pi \delta (M+1/2) n\right) & \tilde{\theta} < \left|\tilde{k}\right|, ~  \tilde{\theta} + \left|\tilde{k}\right| \geq 1 \\
 & \\ 
-e^{-i\pi \delta n} \sin\left(2\pi \delta (M+1) n\right) & \tilde{\theta} \geq \frac{k}{2\pi}, ~ \tilde{\theta} + \frac{k}{2\pi} > 1 \\
+e^{-i\pi \tilde{s}\delta n} \sin\left(2\pi \delta (M+1) n\right) & \tilde{\theta} \geq \left|\tilde{k}\right|, ~  \tilde{\theta} + \left|\tilde{k}\right| \geq 1 \\
 \end{array}\right.
 \]
 
 With $\Gamma(k)$ computed, we can find the rescaled wavelet function at discretized nodes $x_{m}$ is given by 
 \[
-\tilde{\varphi}_{m} = \sum_{l=0}^{N_{s}-1}\varphi_{l}K(m-l), ~ K(n) = \frac{1}{2\pi}\int_{0}^{2\pi} \frac{1}{\Gamma\left(\frac{k}{\delta}\right)}e^{ink}dk.
+\tilde{\varphi}_{m} = \sum_{l=0}^{N_{s}-1}\varphi_{l}K(m-l), ~ K(n) = \frac{1}{2\pi}\int_{-\pi}^{\pi} \frac{1}{\Gamma\left(\frac{k}{\delta}\right)}e^{ink}dk.
 \]
 We can then find the initial approximation coefficients via the formula
 \begin{align*}

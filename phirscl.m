@@ -1,23 +1,21 @@
-function rphi = phirscl(vphi,Llx,Nkp)
-    
-    Ncp = length(vphi);
-    dx = 2*Llx/Ncp;
-    dk = 2*pi/Nkp;
+function rphi = phirscl(vphi,KT,dx)
+    dk = 2*pi/KT;
     tpi = 2*pi;    
     odx = 1/(2*dx);
     M = floor(odx);
     tht = odx - M;
     
-    Kmesh = (0:dk:tpi-dk)';
-    gvec = zeros(Nkp,1);
-    for jj = 1:Nkp
+    Kmesh = (-pi:dk:pi);
+    Nvals = (0:KT-1)';
+    gvec = zeros(KT+1,1);
+    for jj = 1:KT+1
         kval = mod(Kmesh(jj)/dx,tpi);
-        gvec(jj) = gam_comp(dx,vphi,Ncp,M,tht,kval);
+        gvec(jj) = gam_comp(dx,vphi,KT,M,tht,kval);
     end
-    
-    Kvec = ifft(1./gvec);
+    Kmat = exp(1i*Nvals*Kmesh(2:end-1));
+    rcg = 1./gvec;
+    Kvec = 1/(2*KT)*( (-1).^(Nvals)*(rcg(1)+rcg(end)) + 2*Kmat*rcg(2:end-1));
     rphi = toeplitz(Kvec')*vphi;
-    disp(max(abs(imag(rphi))))
-    rphi = real(rphi);
+    rphi = real(rphi); %Note, imaginary part was found to be less than machine precision.
 end
 
