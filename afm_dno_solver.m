@@ -64,13 +64,10 @@ function [nfin,hflt] = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
     n0 = .5*(etanp + 1i*abs(k0)*qnp/Om).*exp(-1i*k0*Xmesh);
     dmode = nls_solver(ad,anl,fft(interpft(n0,2*K*ep)),K*ep,Llx*ep,tf*ep^2);
     dxf = (2*Llx/KT);
-    fdmode = fst_samp(dmode,KT,ep);
+    %fdmode = fst_samp(dmode,KT,ep);
     %fdmode = 2*real(sech(Xmesh).*fdmode.*exp(1i*k0*Xmesh/ep));
+    %fdmode = .5*(fdmode + flipud(fdmode));
     fdmode = 2*real(sech(Xmesh).*exp(1i*k0*Xmesh));
-    figure(1)
-    plot(Xmesh,fdmode,'r-','LineWidth',2)
-    pause
-    
     hflt = filter_maker(fdmode,KT,dxf,Llx);
     
     % Generic ICs

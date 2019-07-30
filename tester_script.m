@@ -1,6 +1,7 @@
 function tester_script(Llx,K,k0,ep,sig,tf,dt)
 
     [nfin,hflt] = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt);
+    disp(sum(hflt))
     nlvls = -log2(ep);
     KT = 2*K;
     slvls = KT;
