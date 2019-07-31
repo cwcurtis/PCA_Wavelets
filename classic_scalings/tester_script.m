@@ -5,13 +5,13 @@ function tester_script(Llx,K,k0,ep,sig,tf,dt)
     nlvls = -log2(ep);
     KT = 2*K;
     slvls = KT;
+    dk = 2*pi/KT;
     dx = 2*Llx/KT;
-    dk = 2*pi/(dx*KT);
     Xmesh = linspace(-Llx,Llx,KT+1);
     Xmesh = Xmesh(1:KT)';
-    Kmesh = (-pi/dx:dk:pi/dx-dk);
+    Kmesh = (-pi:dk:pi-dk);
     Nvals = (-K+1:K);
-    Kmat = exp(-1i*Kmesh'*Nvals*dx);
+    Kmat = exp(-1i*Kmesh'*Nvals);
     
     gflt = (-1).^(-K+1:K)'.*flipud(hflt);
     gflt = [gflt(end);gflt(1:end-1)];
