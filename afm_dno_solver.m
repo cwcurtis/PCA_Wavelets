@@ -27,6 +27,8 @@ function [nfin,hflt] = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
     Kmesh = pi/Llx*[0:K -K+1:-1]';
         
     nmax = round(tf/dt);
+    nsol = zeros(KT,nmax+1);
+    dx = 2*Llx/KT;
     [k0,sk,Om,ad,anl] = nls_params(k0,Llx,sig);
 
     disp('Dispersion coefficient is')
@@ -56,19 +58,22 @@ function [nfin,hflt] = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
             + exp(-(Kmesh-2*k0).^2/(4.*stdv)).*exp(2*pi*1i*rand(KT,1)) );
           
     noise = 2*sqrt(2*ad/anl)*real(ifft(noise));
+    %etanp = 2*real(etan) + noise;
+    %qnp = 2*real(qn) + noise;
     etanp = 2*real(etan);
     qnp = 2*real(qn);
+    nsol(:,1) = etanp;
     etan = fft(etanp);
     qn = fft(qnp);
     
-    n0 = .5*(etanp + 1i*abs(k0)*qnp/Om).*exp(-1i*k0*Xmesh);
-    dmode = nls_solver(ad,anl,fft(interpft(n0,2*K*ep)),K*ep,Llx*ep,tf*ep^2);
-    dxf = (2*Llx/KT);
+    %n0 = .5*(etanp + 1i*abs(k0)*qnp/Om).*exp(-1i*k0*Xmesh);
+    %dmode = nls_solver(ad,anl,fft(interpft(n0,2*K*ep)),K*ep,Llx*ep,tf*ep^2);
+    
     %fdmode = fst_samp(dmode,KT,ep);
     %fdmode = 2*real(sech(Xmesh).*fdmode.*exp(1i*k0*Xmesh/ep));
     %fdmode = .5*(fdmode + flipud(fdmode));
-    fdmode = 2*real(sech(Xmesh).*exp(1i*k0*Xmesh));
-    hflt = filter_maker(fdmode,KT,dxf,Llx);
+    %fdmode = 2*real(sech(Xmesh).*exp(1i*k0*Xmesh/ep));
+    %hflt = filter_maker(fdmode,KT,dxf,Llx);
     
     % Generic ICs
     % etan = fft(cos(k0*Xmesh).*sech(ep*Xmesh));
@@ -113,6 +118,17 @@ function [nfin,hflt] = afm_dno_solver(K,k0,ep,Llx,sig,tf,dt)
         nlnm3 = nlnm2;
         nlnm2 = nlnm1;
         nlnm1 = nln;        
+        nsol(:,jj+1) = real(ifft(etan));
     end
     
-    nfin = real(ifft(etan));
+    [U,S,~] = svd(nsol);
+    S = diag(S);
+    nfin = nsol(:,end);
+    fdmode = S(1)*U(:,1);
+    %fdmode = .5*(fdmode + flipud(fdmode));
+    figure(1)
+    plot(Xmesh,sech(Xmesh).*fdmode,'k-','LineWidth',2)
+    figure(2)
+    plot(Xmesh,nfin,'k-','LineWidth',2)
+    pause
+    hflt = filter_maker(sech(Xmesh).*fdmode,KT,dx,Llx);
