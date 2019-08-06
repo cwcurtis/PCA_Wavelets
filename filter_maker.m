@@ -1,4 +1,5 @@
-function hflt = filter_maker(vphi,KT,dx,Llx)
+function [hflt,osamp] = filter_maker(vphi,KT,dx,Llx,osamp)
+    KT = osamp*KT;
     dk = pi/(KT*dx);
     Kmesh = (-pi/(2*dx):dk:pi/(2*dx))';
     Xmesh = (-Llx:dx:Llx-dx);

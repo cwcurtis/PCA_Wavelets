@@ -1,36 +1,34 @@
 function nls_tester_script(Llx,K,k0,sig,tf,dt)
-
-    [nfin,hfltr,hflti] = nls_solver_stndalne(k0,K,Llx,sig,tf,dt);
     
-    nlvls = 2;
+    nlvls = 3;
     KT = 2*K;
-    slvls = KT;
-    
-    gfltr = (-1).^(-K+1:K)'.*flipud(hfltr);
-    gfltr = [gfltr(KT);gfltr(1:KT-1)];
-    gflti = (-1).^(-K+1:K)'.*flipud(hflti);
-    gflti = [gflti(KT);gflti(1:KT-1)];
-        
     Xmesh = linspace(-Llx,Llx,KT+1);
     Xmesh = Xmesh(1:KT)';
+    osamp = 2;
     
-    dx = 2*Llx/KT;
-    dk = 2*pi/(dx*KT);
-    Kmesh = (-pi/dx:dk:pi/dx-dk);
-    Nvals = (-K+1:K);
-    Kmat = exp(-1i*Kmesh'*Nvals*dx);
-    hfunr = Kmat*hfltr;
-    gfunr = Kmat*gfltr;
-    hfuni = Kmat*hflti;
-    gfuni = Kmat*gflti;
+    rphi = phirscl(vphi,Llx,KT,dx,osamp); 
+    [nfin,hfltr,hflti,osamp] = nls_solver_stndalne(rphi,k0,K,Llx,sig,tf,dt);
     
-    plot(Kmesh,abs(hfunr).^2+abs(gfunr).^2)
-    pause
+    KTT = KT*osamp;
+    Kosmp = K*osamp;
+    nonesosmp = (-1).^(-Kosmp+1:Kosmp);
+    gfltr = nonesosmp'.*flipud(hfltr);
+    gfltr = [gfltr(KTT);gfltr(1:KT*osamp-1)];
+    gflti = nonesosmp'.*flipud(hflti);
+    gflti = [gflti(KTT);gflti(1:KTT-1)];
+        
     
-    plot(Kmesh,abs(hfuni).^2+abs(gfuni).^2)
-    pause
+    %dx = 2*Llx/KT;
+    %dk = 2*pi/(dx*KT);
+    %Kmesh = (-pi/dx:dk:pi/dx-dk);
+    %Nvalsosmp = (-Kosmp+1:Kosmp);
+    %Kmat = exp(-1i*Kmesh'*Nvalsosmp*dx);
+    %hfunr = Kmat*hfltr;
+    %gfunr = Kmat*gfltr;
+    %hfuni = Kmat*hflti;
+    %gfuni = Kmat*gflti;
     
-    [dwtcr,dwtci] = wvlt_decomp_nls(nfin,gfltr,gflti,hfltr,hflti,nlvls,slvls);
+    [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir] = wvlt_decomp_nls(nfin,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp);
     
     figure(1)
     plot(Xmesh,abs(nfin),'k-','LineWidth',2)
@@ -52,12 +50,13 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
     for jj=2:nlvls+1
         dr = dwtcr(lstp:rstp);
         di = dwtci(lstp:rstp);
-        ar = idwt(ar,dr,gfltr,hfltr);
-        ai = idwt(ai,di,gflti,hflti);
+        ar = idwt(ar,dr,gfltrr,hfltrr);
+        ai = idwt(ai,di,gfltir,hfltir);
         tot = tot*2;
-        
+        are = interp1(Xmesh(1:2^(nlvls+1-jj):KT),ar,Xmesh,'spline');
+        aie = interp1(Xmesh(1:2^(nlvls+1-jj):KT),ai,Xmesh,'spline');
         figure(jj+1)
-        plot(Xmesh,abs(interpft(ar+1i*ai,KT)),'k-','LineWidth',2)
+        plot(Xmesh,abs(are+1i*aie),'k-','LineWidth',2)
         
         lstp = rstp + 1;
         rstp = lstp - 1 + tot;

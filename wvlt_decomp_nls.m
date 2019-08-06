@@ -1,4 +1,4 @@
-function [dwtcr,dwtci] = wvlt_decomp_nls(f0,gfltr,gflti,hfltr,hflti,nlvls,KT)
+function [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir] = wvlt_decomp_nls(f0,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp)
 
 tot = 2*KT;
 dwtcr = zeros(tot,1);
@@ -8,14 +8,35 @@ lstp = tot-pcnt;
 rstp = tot;
 f0r = real(f0);
 f0i = imag(f0);
+
+K = KT/2;
+Kosmp = K*osamp;
+dx = 2*Llx/KT;
+dk = 2*pi/(dx*KT);
+Kmesh = (-pi/dx:dk:pi/dx-dk);
+Nvals = (-Kosmp+1:Kosmp);
+Nvalsr = (-K+1:K);
+Kmat = exp(-1i*Kmesh'*Nvals*dx);    
+Kmati = exp(1i*Nvalsr'*Kmesh*dx);
+
+hfunr = Kmat*hfltr;
+hfuni = Kmat*hflti;
+gfunr = Kmat*gfltr;
+gfuni = Kmat*gflti;
+
+hfltrr = real(Kmati*hfunr/KT);
+hfltir = real(Kmati*hfuni/KT);
+gfltrr = real(Kmati*gfunr/KT);
+gfltir = real(Kmati*gfuni/KT);
+
 dwtcr(lstp:rstp) = f0r;
 dwtci(lstp:rstp) = f0i;
 
 dwtmode('per')
 
 for jj=1:nlvls
-    [ar,dr] = dwt(f0r,gfltr,hfltr);  
-    [ai,di] = dwt(f0i,gflti,hflti);  
+    [ar,dr] = dwt(f0r,gfltrr,hfltrr);  
+    [ai,di] = dwt(f0i,gfltir,hfltir);  
     
     stp = KT*2^(-jj) - 1;
     rstp = lstp-1;
