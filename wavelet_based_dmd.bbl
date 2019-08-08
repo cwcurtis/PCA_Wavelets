@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+
+\bibitem{schmid}
+P.~Schmid.
+\newblock Dynamic mode decomposition of numerical and experimental data.
+\newblock {\em J. Fluid Mech.}, 656:5--28, 2010.
+
+\bibitem{mezic1}
+I.~Mezi\'{c}.
+\newblock Spectral properties of dynamical systems, model reduction, and
+  decompositions.
+\newblock {\em Nonlinear Dyn.}, 41:309--325, 2005.
+
+\bibitem{williams}
+M.O. Williams, I.~G. Kevrekidis, and C.~W. Rowley.
+\newblock A data-driven approximation of the {K}oopman operator: extending
+  dynamic mode decomposition.
+\newblock {\em J. Nonlin. Sci.}, 25:1307--1346, 2015.
+
+\bibitem{kutz}
+J.N. Kutz, S.L. Brunton, B.W. Brunton, and J.L. Proctor.
+\newblock {\em Dynamic Mode Decomposition: Data-driven modeling of complex
+  systems}.
+\newblock SIAM, Philadelphia, PA, 2016.
+
+\bibitem{kutz2}
+J.N. Kutz, J.L. Proctor, and S.L. Brunton.
+\newblock Applied {K}oopman theory for partial differential equations and
+  data-driven modeling of spatio-temporal systems.
+\newblock {\em Complexity}, 2018:1--16, 2018.
+
+\end{thebibliography}

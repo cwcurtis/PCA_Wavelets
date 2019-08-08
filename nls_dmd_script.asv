@@ -10,8 +10,8 @@ function nls_dmd_script(Llx,K,k0,sig,tf,dt)
     Kc = Kc+1;
     pslice = [1:Kc-1 Kuc+1:KT];
     
-    rphi = phirscl(sech(Xmesh).*exp(1i*Xmesh),dx); 
-    %rphi = phirscl(sech(Xmesh),dx); 
+    %rphi = phirscl(sech(Xmesh).*exp(1i*Xmesh),dx); 
+    rphi = phirscl(sech(Xmesh),dx); 
     nsol = nls_solver_stndalne(rphi,k0,K,Llx,sig,tf,dt);
     
     %disp("Condition number of nsol is:")
@@ -20,15 +20,16 @@ function nls_dmd_script(Llx,K,k0,sig,tf,dt)
     [U,S,V] = svd(nsol(:,1:end-1),'econ');
     Sd = diag(S);
     mSv = max(Sd);
-    kpinds = log10(Sd/mSv) > -4;
+    kpinds = log10(Sd/mSv) > -2;
     Si = diag(1./Sd(kpinds));
     Amat = U(:,kpinds)'*nsol(:,2:end)*V(:,kpinds)*Si;
         
     [Mds,Evls] = eig(Amat);
     Mds = U(:,kpinds)*Mds;
-    [mdsz,kpsz] = size(Mds);
-    disp("Condition number of modes matrix is:")
-    disp(cond(Mds'*Mds))
+    [~,kpsz] = size(Mds);
+    
+    surf(1:kpsz,1:kpsz,log10(abs(Mds'*Mds),'LineStyle','none')
+    pause
     
     bvls = Mds\nsol(:,1);
     
@@ -37,8 +38,8 @@ function nls_dmd_script(Llx,K,k0,sig,tf,dt)
     naprx = sum(Mds*fbal,2);
     
     disp("Formal error is:")
-    %disp(norm(naprx-nsol(:,end))/norm(nsol(:,end)))
-    disp(norm(naprx-nsol(:,end),'inf')/norm(nsol(:,end),'inf'))
+    disp(norm(naprx-nsol(:,end))/norm(nsol(:,end)))
+    
     sigtrms = log10( abs( fbal/max(abs(fbal)) ) );
     %kptrms = sigtrms > -16;
     %disp("Number of kept terms:")
@@ -60,8 +61,5 @@ function nls_dmd_script(Llx,K,k0,sig,tf,dt)
     plot(Kuc-KT+1:(Kc-1),abs(naprx),'k-','LineWidth',2)
     
     figure(6)
-    surf(1:kpsz,1:mdsz,log10(abs(Mds)),'LineStyle','none')
-    
-    figure(7)
-    surf(1:kpsz,1:kpsz,log10(abs(Mds'*Mds)),'LineStyle','none')
+    plot(log10(Sd(kpinds)))
     

@@ -1,0 +1,185 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphicx}
+\usepackage{epstopdf, epsfig}
+\epstopdfsetup{update}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+
+\newcommand{\bc}{\begin{center}}
+\newcommand{\ec}{\end{center}}
+
+\newcommand{\ds}{\displaystyle}
+
+\newcommand{\bt}{\begin{tabular}}
+\newcommand{\et}{\end{tabular}}
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
+\newcommand{\bd}{\begin{description}}
+\newcommand{\ed}{\end{description}}
+
+\newcommand{\bp}{\begin{pmatrix}}
+\newcommand{\ep}{\end{pmatrix}}
+
+\newcommand{\pd}{\partial}
+\newcommand{\sech}{\mbox{sech}}
+
+\newcommand{\cf}{{\it cf.}~}
+
+\newcommand{\ltwo}{L_{2}(\mathbb{R}^{2})}
+\newcommand{\smooth}{C^{\infty}_{0}(\mathbb{R}^{2})}
+
+\newcommand{\br}{{\bf r}}
+\newcommand{\bk}{{\bf k}}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\bu}{{\bf u}}
+
+\newcommand{\gnorm}[1]{\left|\left| #1\right|\right|}
+\newcommand{\ipro}[2]{\left<#1,#2 \right>}
+\title{Wavelet Based Dynamic-Mode Decomposition for Partial Differential Equations}
+\author{Christopher W. Curtis}
+\date{}
+\begin{document}
+\maketitle
+\section*{Introduction}
+For nonlinear dynamical systems of the generic form
+\[
+\frac{d}{dt}{\bf a} = f({\bf a},t), ~ {\bf a}(0) = {\bf a}_{0} \in \mathbb{C}^{n},
+\]
+if one looks at the associated Hilbert space of {\it observables}, say $L_{2}\left(\mathbb{C}^{n},\mathbb{C},\mu\right)$, so that $g \in L_{2}\left( \mathbb{C}^{n},\mathbb{C},\mu\right)$ if
+\[
+\int_{\mathbb{C}^{n}} \left|g({\bf a})\right|^{2} d\mu\left({\bf a}\right) < \infty,
+\]
+where $\mu$ is some appropriately chosen measure, then a great deal of insight and predictive power can be gained from looking at the affiliated linear representation of the problem given via the infinite-dimensional Koopman operator $\mathcal{K}^{t}$.  For given Hilbert space $\mathcal{H}$, we have 
+\[
+\mathcal{K}^{t}:L_{2}\left( \mathbb{C}^{n},\mathbb{C},\mu\right)\rightarrow L_{2}\left( \mathbb{C}^{n},\mathbb{C},\mu\right) 
+\]
+so that if $g \in L_{2}\left( \mathbb{C}^{n},\mathbb{C},\mu\right)$, then 
+\[
+\mathcal{K}^{t}g({\bf a}_{0}) =  g\left(\varphi_{t}({\bf a}_{0})\right), 
+\]
+where $\varphi_{t}({\bf a}_{0})$ is the flow associated with the nonlinear dynamical system described above.  Note, throughout the remainder of the paper, we refer to the space of observables as $L_{2}\left(O \right)$.
+
+The power in this approach is that by moving to a linear-operator framework, the affiliated dynamics of the nonlinear system as measured via observables is captured via the eigenvalues of $\mathcal{K}^{t}$.  Thus, assuming for the moment that $\mathcal{K}^{t}$ has only discrete spectra, then if we can find a basis of $L_{2}\left(O\right)$ via the Koopman modes $\phi_{j}$ where
+\[
+\mathcal{K}^{t}\phi_{j} = e^{t\lambda_{j}}\phi_{j}
+\]
+then any other observable $g$, we should have 
+\[
+g = \sum_{j=1}^{\infty}c_{j}\phi_{j}, ~ \mathcal{K}^{t}g = \sum_{j=1}^{\infty}e^{\lambda_{j}t}c_{j}\phi_{j}.
+\]
+Thus, if we chose the observable $g_{l}({\bf a}_{0}) = {\bf a}_{0,l}$, which just selects the $l^{th}$ component of the n-dimensional vector ${\bf a}_{0}$, then the Koopman operator provides a linear framework to describe the dynamics of a coordinate which evolves along an otherwise nonlinear flow.  However, as one would imagine, determining the modes of the Koopman operator is in general impossible in an analytic way.  The Dynamic-Mode Decomposition (DMD) method \cite{schmid,mezic1,williams,kutz} has been developed which allows for the determination of a finite number of the Koopman modes.  The efficacy of this approach though is contingent on the choice of observables one makes, and to date no general strategy for observable choosing strategies has been made.  
+
+However, while finite-dimensional dynamical systems are certainly of interest in their own right, we often wish to study nonlinear partial-differential equations (PDEs) of the general form 
+\[
+\pd_{t} u = \mathcal{L} u + \mathcal{N}(u), ~ u(x,0) = u_{0}(x) \in \mathcal{H}
+\]
+where $\mathcal{H}$ is some reasonably chosen Hilbert space.  Frequently, the only recourse to solving the above initial-value problem is through numerical simulation, which is often facilitated by expanding the solution $u(x,t)$ along an orthonormal basis of $\mathcal{H}$ so that 
+\[
+u(x,t) \approx \sum_{j=1}^{N_{s}} \hat{u}_{j}(t) \hat{e}_{j}(x), ~ \left<\hat{e}_{j},\hat{e}_{k} \right> = \delta_{jk}.
+\]
+This generates a system of equations describing the evolution of the coefficients $\hat{u}_{j}(t)$, or the $N_{s}$ dimensional vector $\hat{{\bf u}}(t) = \varphi_{t}(\hat{{\bf u}}_{0})$.  With this mind, the most natural observation operators are either of the coefficients $\hat{u}_{j}$ themselves or of linear combinations which reconstruct and sample $u(x,t)$, i.e. 
+\[
+g(\hat{{\bf u}};x) = \sum_{j=1}^{N_{s}}\hat{u}_{j} \hat{e}_{j}(x)
+\]
+In some respects then, one can see the inherent difficulty, as illustrated in \cite{kutz2}, of finding useful observables since they must necessarily be of a more complicated form since we have now temporal and spatial data to connect.  
+
+To remedy this issue of effective observable selection in the context of modeling nonlinear PDE's, we introduce the use of wavelets.  Discrete wavelet analysis begins with a {\it scaling function} $\tilde{\psi}\in \mathcal{H}$, such that relative to some length scale $\delta$, the set of functions 
+\[
+\left\{\tau^{\delta}_{n}\tilde{\psi}\right\}_{n=-\infty}^{\infty},
+\]
+forms an orthonormal set, where
+\[
+\tau^{\delta}_{n}\tilde{\psi}(x) = \tilde{\psi}\left(x - n\delta\right).
+\]
+We define the subspace $V_{0} \subset \mathcal{H}$ so that 
+\[
+V_{0} = \mbox{Span}\left\{\left\{\tau^{\delta}_{n}\tilde{\psi}\right\}_{n=-\infty}^{\infty}\right\}.
+\]
+For ease assuming $\delta = 2^{-J}$, by introducing the corresponding wavelet function $\tilde{\eta}$, one is able to seperate the space $V_{0}$ such that 
+\[
+V_{0} = V_{1} \oplus W_{1}, 
+\]
+where
+\[
+V_{1} = \mbox{Span}\left\{ \sqrt{2}\left\{\tau^{2\delta}_{n}\tilde{\psi}\right\}_{n=-\infty}^{\infty}\right\}, ~ W_{1} = \mbox{Span}\left\{ \sqrt{2}\left\{\tau^{2\delta}_{n}\tilde{\eta}\right\}_{n=-\infty}^{\infty}\right\},
+\]
+so that $V_{1}$ represents that parts of functions in $V_{0}$ which vary on the longer scale $2\delta$, while $W_{1}$ represents the {\it details} of the functions in $V_{0}$.  In turn, one can then look at longer scales by separating $V_{1} = V_{2} \oplus W_{2}$ and so forth.  This collection of separated spaces represents a multi-resolution approximation (MRA).   
+
+We now suppose that a scaling function $\tilde{\psi}$ can be found such that some significant portion of initial conditions $u_{0}(x)$ to the nonlinear PDE of interest are well-represented at one scale, i.e. for given $\epsilon > 0$  there exist $2M+1$ modes $\tau^{\delta }_{n}\tilde{\psi}$ such that 
+\[
+\gnorm{u_{0} - \sum_{n=-M}^{M}\tilde{u}_{0,n}\tau^{\delta}_{n}\tilde{\psi}}_{\mathcal{H}} < \epsilon, ~ \tilde{u}_{0,n} = \left<u_{0}, \tau^{\delta}_{n}\tilde{\psi}\right>. 
+\]
+We then suppose that 
+\[
+\tilde{\psi}(x) \approx \sum_{m=1}^{N_{s}}\hat{\tilde{\psi}}_{m}\hat{e}_{m}(x),
+\]
+and if we wished, we could use $\tilde{\psi}(x)$ as an initial condition to the nonlinear PDE so that at time $t$ later, we have the solution 
+\[
+u(x,t) \approx \sum_{m=1}^{N_{s}}\hat{\tilde{\psi}}_{m}(t)\hat{e}_{m}(x), ~ u(x,0) = \tilde{\psi}(x).
+\]
+If the nonlinear PDE is invariant under spatial translation, then if use the initial condition $u_{0}(x) = \tau_{n}^{\delta}\tilde{\psi}(x)$, we have the corresponding solution 
+\[
+u(x,t) \approx \sum_{m=1}^{N_{s}} \hat{\tilde{\psi}}_{m}(t)\tau_{n}^{\delta}\hat{e}_{m}(x).
+\]
+If we write $\tau_{n}^{\delta}\hat{e}_{m}(x)$ as 
+\[
+\tau_{n}^{\delta}\hat{e}_{m}(x) = \sum_{l=1}^{N_{s}}\hat{\tau}^{\delta,n}_{m,l}\hat{e}_{l}(x),
+\]
+then we see that we can generate the evolution of any shift of the scaling function simply by finding the terms of $\tau_{n}\hat{\tilde{\psi}}$ where 
+\[
+\left(\tau_{n}\hat{\tilde{\psi}}\right)_{l} = \sum_{m=1}^{N_{s}}\hat{\tilde{\psi}}_{m}(t)\hat{\tau}^{\delta,n}_{m,l}.
+\]
+Thus, knowing the flow of the scaling function determines the flows of all of the shifts of the scaling function.  
+
+From this we propose a class of observables $W$ such that 
+\[
+W\left(\hat{{\bf u}} ; \left\{w_{n}\right\}_{n=-M}^{M}\right) = \sum_{m=1}^{N_{s}}\left(\sum_{l=1}^{N_{s}}\tilde{w}_{ml}\hat{u}_{l}\right)\hat{e}_{m}(x), ~ \tilde{w}_{ml} = \sum_{n=-M}^{M}\hat{\tau}^{\delta,n}_{m,l}w_{n},
+\]
+where the coefficients $w_{n}\in \mathbb{C}$ are free for us to choose. 
+
+\section*{Building the Wavelet Basis, Koopman Analysis, and Filtration}
+We choose a representative function $\psi(x)\in \mathcal{H}$ and sample it over a discretized mesh 
+\[
+x_{m} = -L + \delta m, ~\delta = \frac{2L}{N_{s}}, ~m=0,\cdots,N_{s}-1, 
+\]
+so that we can approximate the original function via the interpolatory formula
+\[
+\psi(x) \approx \sum_{m}\psi_{m}\mbox{sinc}\left(\frac{x-x_{m}}{\delta} \right).
+\]
+To build a suitable scaling function, we then need to compute 
+\[
+\Gamma(k) = \left(\sum_{m=-\infty}^{\infty}\left|\hat{\psi}\left(k + \frac{2\pi m}{\delta} \right) \right| \right)^{1/2}.
+\]
+One can then readily show that a scaling function, say $\tilde{\psi}(x)$, can be found via the formula 
+\[
+\tilde{\psi}(x) = \frac{\sqrt{\delta}}{2\pi}\int_{-\pi/\delta}^{\pi/\delta}e^{ikx} e^{i\theta(\delta k)} dk, ~ \theta(k) = \mbox{arg}\left\{ \sum_{m=0}^{N_{s}-1}\psi_{m}e^{-ik x_{m}}\right\} 
+\]
+
+From this, for example, if one let $\delta = 2^{-J}$, then the usual dyadic multri-resolution analysis (MRA) could be built whereby a signal sampled at the gridscale could be decomposed into details and approximations at the grid and subsequently longer scales.  Instead, though, we suppose that we have chosen $\psi$ so that any eigenfunction of $\mathcal{K}^{t}$ is largely captured by only one scale.  Thus, if $\phi$ is an eigenfunction of the Koopman operator, we have that 
+\[
+\mathcal{K}^{t}\phi = e^{\lambda t}\phi.
+\]
+If we further suppose that 
+\[
+\phi(x) \approx \sum_{n}w_{n}\tilde{\psi}\left(x-\delta n \right)
+\]
+\section*{Examples}
+
+\section*{Conclusion}
+
+\section*{Appendix}
+
+\bibliography{dmd_wavelet}
+\bibliographystyle{unsrt}
+\end{document}
