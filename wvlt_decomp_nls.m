@@ -1,4 +1,4 @@
-function [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir] = wvlt_decomp_nls(f0,nmode,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp)
+function [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir,psirf,psiif] = wvlt_decomp_nls(f0,nmode,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp)
 
 tot = 2*KT;
 dwtcr = zeros(tot,1);
@@ -20,10 +20,11 @@ Nvalsr = (-K+1:K);
 Kmat = exp(-1i*Kmesh'*Nvals*dx);    
 Kmati = exp(1i*Nvalsr'*Kmesh*dx);
 
-psir = phirscl(real(nmode),dx);
-psii = phirscl(imag(nmode),dx);
+[~,psirf] = phirscl(real(nmode),dx);
+[~,psiif] = phirscl(imag(nmode),dx);
 
-
+fwcr = wvlt_init_cond_trans(f0r,psirf);
+fwci = wvlt_init_cond_trans(f0i,psiif);
 
 hfunr = Kmat*hfltr;
 hfuni = Kmat*hflti;
@@ -35,8 +36,8 @@ hfltir = real(Kmati*hfuni/KT);
 gfltrr = real(Kmati*gfunr/KT);
 gfltir = real(Kmati*gfuni/KT);
 
-dwtcr(lstp:rstp) = f0r;
-dwtci(lstp:rstp) = f0i;
+dwtcr(lstp:rstp) = fwcr;
+dwtci(lstp:rstp) = fwci;
 
 dwtmode('per')
 

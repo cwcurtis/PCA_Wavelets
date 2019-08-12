@@ -29,7 +29,7 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
     %hfuni = Kmat*hflti;
     %gfuni = Kmat*gflti;
     
-    [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir,psirf,psiif] = wvlt_decomp_nls(nfin,nmode,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp);
+    [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir,psir,psii] = wvlt_decomp_nls(nfin,nmode,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp);
     
     figure(1)
     plot(Xmesh,abs(nfin),'k-','LineWidth',2)
@@ -37,10 +37,11 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
     lstp = 1;
     scfc = 2^nlvls;
     rstp = KT/scfc;
-    tot = KT/scfc;        
+    tot = KT/scfc;
+        
     
-    frncr = wvlt_fun_recon(dwtcr(lstp:rstp),psirf,dx,KT,nlvls);
-    frnci = wvlt_fun_recon(dwtci(lstp:rstp),psiif,dx,KT,nlvls);
+    frncr = wvlt_fun_recon(dwtcr(lstp:rstp),psir,dx,KT,nlvls);
+    frnci = wvlt_fun_recon(dwtci(lstp:rstp),psii,dx,KT,nlvls);
     
     figure(2)
     plot(Xmesh,abs(interpft(frncr+1i*frnci,KT)),'k-','LineWidth',2)
@@ -56,12 +57,12 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
         di = dwtci(lstp:rstp);
         ar = idwt(ar,dr,gfltrr,hfltrr);
         ai = idwt(ai,di,gfltir,hfltir);
-        frncr = wvlt_fun_recon(ar,psirf,dx,KT,nlvls-(jj-1));
-        frnci = wvlt_fun_recon(ai,psiif,dx,KT,nlvls-(jj-1));
+        frncr = wvlt_fun_recon(dwtcr(lstp:rstp),psir,dx,KT,nlvls-(jj));
+        frnci = wvlt_fun_recon(dwtci(lstp:rstp),psii,dx,KT,nlvls);
     
         tot = tot*2;
-        are = interp1(Xmesh(1:2^(nlvls+1-jj):KT),frncr,Xmesh,'spline');
-        aie = interp1(Xmesh(1:2^(nlvls+1-jj):KT),frnci,Xmesh,'spline');
+        are = interp1(Xmesh(1:2^(nlvls+1-jj):KT),ar,Xmesh,'spline');
+        aie = interp1(Xmesh(1:2^(nlvls+1-jj):KT),ai,Xmesh,'spline');
         figure(jj+1)
         plot(Xmesh,abs(are+1i*aie),'k-','LineWidth',2)
         
@@ -69,13 +70,13 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
         rstp = lstp - 1 + tot;
     end
     
-    af = frncr + 1i*frnci;
+    af = ar + 1i*ai;
     
     figure(nlvls+3)
-    plot(Xmesh,real(nfin),'k-',Xmesh,frncr,'r-','LineWidth',2)
+    plot(Xmesh,real(nfin),'k-',Xmesh,ar,'r-','LineWidth',2)
         
     figure(nlvls+4)
-    plot(Xmesh,imag(nfin),'k-',Xmesh,frnci,'r-','LineWidth',2)
+    plot(Xmesh,imag(nfin),'k-',Xmesh,ai,'r-','LineWidth',2)
     
     figure(nlvls+5)
     plot(Xmesh,log10(abs(nfin-af)),'k-','LineWidth',2)

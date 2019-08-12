@@ -16,9 +16,6 @@ function [nfin,nmode] = nls_solver_filter(k0,K,Llx,sig,tf,dt)
     n0 = fft(sltn)+noise*ep;
     n0(Kc:Kuc) = 0;
     
-    plot(Xmesh,abs(ifft(n0)),'k-','LineWidth',2)
-    pause
-    
     Emh = exp(1i*dt/2*ad*Kmesh.^2);
     Em = Emh.*Emh;
     
@@ -70,8 +67,3 @@ function [nfin,nmode] = nls_solver_filter(k0,K,Llx,sig,tf,dt)
     dx = Llx/K;
     nmodet = 1/(dx*sqrt(2*pi)).*exp(-Xmesh.^2/(2*dx^2));
     nmode = nmodet.*exp(1i.*Xmesh);
-    figure(1)
-    plot(SDr,'k-','LineWidth',2)
-    figure(2)
-    plot(Xmesh,abs(nmode),'k-','LineWidth',2)
-    pause

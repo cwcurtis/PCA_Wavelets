@@ -1,4 +1,4 @@
-function rphi = phirscl(vphi,dx)
+function [rphi,rphif] = phirscl(vphi,dx)
     
     %{
     KTT = osamp*KT;
@@ -13,5 +13,6 @@ function rphi = phirscl(vphi,dx)
     %}
 
     fphi = fft(vphi);
-    rphi = 1/sqrt(dx)*ifft(exp(1i*angle(fphi)));
+    rphif = sqrt(dx)*exp(1i*angle(fphi));
+    rphi = 1/sqrt(dx)*ifft(rphif);
     
