@@ -1,4 +1,4 @@
-function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt)
+function [nfin,nmode] = nls_solver_filter(k0,K,Llx,sig,tf,dt)
 
     nsteps = floor(tf/dt);
     KT = 2*K;
@@ -14,25 +14,17 @@ function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt)
     sltn = sqrt(2*ad/anl)*(sech(Xmesh) + .5*sech(Xmesh-5));
     noise = fft(exp(-Xmesh.^2./(2*ep^2))/(ep*sqrt(2*pi))).*exp(1i*2*pi*rand(KT,1));
     n0 = fft(sltn)+noise*ep;
-    %n0 = fft(sqrt(2*ad/anl)*sech(Xmesh));
-    %filt = 1./n0;
-    %filt(Kc:Kuc) = 0;
-    
     n0(Kc:Kuc) = 0;
     
-    pslice = [1:Kc-1 Kuc+1:KT];
-    nsol = zeros(length(pslice),nsteps+1);
-    %n0f = n0.*filt;
-    %nsol(:,1) = fftshift(n0f(pslice));
-    nsol(:,1) = fftshift(n0(pslice));
-    
-    %plot(Xmesh,abs(rphi),'k-','LineWidth',2)
-    %pause
+    plot(Xmesh,abs(ifft(n0)),'k-','LineWidth',2)
+    pause
     
     Emh = exp(1i*dt/2*ad*Kmesh.^2);
     Em = Emh.*Emh;
     
     dts = 1i*anl*dt;
+    nsol = zeros(KT,nsteps+1);
+    nsol(:,1) = ifft(n0);
     
     for jj=1:nsteps
         
@@ -55,11 +47,31 @@ function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt)
         n0 = Em.*(n0+k1/6) + Emh.*(k2+k3)/3 + k4/6;
         n0(Kc:Kuc) = 0;
         
-        %nf = n0.*filt;
-        %nsol(:,jj+1) = fftshift(nf(pslice));
-        
-        nsol(:,jj+1) = fftshift(n0(pslice));
+        nsol(:,jj+1) = ifft(n0);
         
     end  
+    nfin = ifft(n0);
+    navg = mean(nsol,2);
+    ndif = nfin - navg;
+    [U,S,~] = svd((nsol-navg));
+    SD = diag(S);
+    SD = SD/max(SD);
+    ikp = SD>0;
+    SDr = log10(SD(ikp));
     
+    ip1 = sum(ndif.*conj(U(:,1)));
+    ip2 = sum(ndif.*conj(U(:,2)));
+    ip3 = sum(ndif.*conj(U(:,3)));
+    ip4 = sum(ndif.*conj(U(:,4)));
     
+    %nmode = navg + ip1*U(:,1) + ip2*U(:,2) + ip3*U(:,3) + ip4*U(:,4);
+    %nmode = navg + ip1*U(:,1);
+    
+    dx = Llx/K;
+    nmodet = 1/(dx*sqrt(2*pi)).*exp(-Xmesh.^2/(2*dx^2));
+    nmode = nmodet.*exp(1i.*Xmesh);
+    figure(1)
+    plot(SDr,'k-','LineWidth',2)
+    figure(2)
+    plot(Xmesh,abs(nmode),'k-','LineWidth',2)
+    pause

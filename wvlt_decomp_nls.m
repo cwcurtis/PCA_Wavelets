@@ -1,4 +1,4 @@
-function [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir] = wvlt_decomp_nls(f0,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp)
+function [dwtcr,dwtci,hfltrr,hfltir,gfltrr,gfltir] = wvlt_decomp_nls(f0,nmode,gfltr,gflti,hfltr,hflti,nlvls,Llx,KT,osamp)
 
 tot = 2*KT;
 dwtcr = zeros(tot,1);
@@ -6,6 +6,7 @@ dwtci = zeros(tot,1);
 pcnt = KT-1;
 lstp = tot-pcnt;
 rstp = tot;
+
 f0r = real(f0);
 f0i = imag(f0);
 
@@ -18,6 +19,11 @@ Nvals = (-Kosmp+1:Kosmp);
 Nvalsr = (-K+1:K);
 Kmat = exp(-1i*Kmesh'*Nvals*dx);    
 Kmati = exp(1i*Nvalsr'*Kmesh*dx);
+
+psir = phirscl(real(nmode),dx);
+psii = phirscl(imag(nmode),dx);
+
+
 
 hfunr = Kmat*hfltr;
 hfuni = Kmat*hflti;

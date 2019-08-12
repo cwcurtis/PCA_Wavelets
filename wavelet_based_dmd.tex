@@ -136,18 +136,51 @@ If we write $\tau_{n}^{\delta}\hat{e}_{m}(x)$ as
 \[
 \tau_{n}^{\delta}\hat{e}_{m}(x) = \sum_{l=1}^{N_{s}}\hat{\tau}^{\delta,n}_{m,l}\hat{e}_{l}(x),
 \]
-then we see that we can generate the evolution of any shift of the scaling function simply by finding the terms of $\tau_{n}\hat{\tilde{\psi}}$ where 
+then we see that we can generate the evolution of any shift of the scaling function simply by finding the orthonormal expansion of $\tau_{n}^{\delta}\tilde{\psi}$ where 
 \[
-\left(\tau_{n}\hat{\tilde{\psi}}\right)_{l} = \sum_{m=1}^{N_{s}}\hat{\tilde{\psi}}_{m}(t)\hat{\tau}^{\delta,n}_{m,l}.
+\left(\tau^{\delta}_{n}\tilde{\psi}\right)^{\hat{}}_{l} = \sum_{m=1}^{N_{s}}\hat{\tilde{\psi}}_{m}(t)\hat{\tau}^{\delta,n,\ast}_{m,l}.
 \]
 Thus, knowing the flow of the scaling function determines the flows of all of the shifts of the scaling function.  
 
 From this we propose a class of observables $W$ such that 
 \[
-W\left(\hat{{\bf u}} ; \left\{w_{n}\right\}_{n=-M}^{M}\right) = \sum_{m=1}^{N_{s}}\left(\sum_{l=1}^{N_{s}}\tilde{w}_{ml}\hat{u}_{l}\right)\hat{e}_{m}(x), ~ \tilde{w}_{ml} = \sum_{n=-M}^{M}\hat{\tau}^{\delta,n}_{m,l}w_{n},
+W\left(\hat{{\bf u}} ; {\bf w}\right) = \sum_{m=1}^{N_{s}}\left(\sum_{l=1}^{N_{s}}\tilde{w}_{ml}\hat{u}_{l}\right)\hat{e}_{m}(x), ~ \tilde{w}_{ml} = \sum_{n=-M}^{M}\hat{\tau}^{\delta,n,\ast}_{m,l}w_{n},
 \]
-where the coefficients $w_{n}\in \mathbb{C}$ are free for us to choose. 
+where the $2M+1$ vector ${\bf w}$ of coefficients $w_{n}\in \mathbb{C}$ are free for us to choose.  We note that 
+\[
+W\left(\hat{\tilde{\psi}} ; {\bf w}\right) \approx \sum_{n=-M}^{M} w_{n}\tau_{n}^{\delta}\tilde{\psi},
+\]
+so that the class of observables we construct correspond to arbitrary linear combinations within $V_{0}$.  
 
+Given our initial assumption that $V_{0}$ in effect represents the most significant space from which we take initial conditions, then our class of observables should represent the most significant observations of any data set affiliated with the nonlinear PDE of interest.  Thus, it seems reasonable to ask if there is a choice of coefficients ${\bf w}$ such that $W(\hat{{\bf u}},{\bf w})$ is a Koopman mode.  To wit, we look for ${\bf w}$ such that
+\[
+e^{\lambda t} \sum_{m=1}^{N_{s}}\left(\sum_{l=1}^{N_{s}}\tilde{w}_{ml}\hat{u}_{l}(0)\right)\hat{e}_{m}(x) = \sum_{m=1}^{N_{s}}\left(\sum_{l=1}^{N_{s}}\tilde{w}_{ml}\hat{u}_{l}(t)\right)\hat{e}_{m}(x)
+\]
+
+Taking inner products with respect to the orthonormal basis then gives us the matrix equation
+\begin{equation}
+\tilde{W} \left(e^{\lambda t} \hat{{\bf u}}(0) - \hat{{\bf u}}(t)\right) = 0, ~ \tilde{W}_{ml} = w_{ml}.
+\label{levec}
+\end{equation}
+We note now that one write the vector $\hat{{\bf u}}(0)$ as  
+\[
+\hat{u}_{m}(0) = \sum_{l=1}^{N_{s}}U_{ml}(0) \hat{\tilde{\psi}}_{l}, ~ U_{ml}(0) = \sum_{n=-M}^{M}\hat{\tau}^{\delta,n,\ast}_{m,l}\tilde{u}_{n}(0).
+\]
+We now make an approximation representing a bit of a leap.  We suppose that instead of the correct statement
+\[
+\hat{u}_{m}(t) = \sum_{l=1}^{N_{s}}U_{ml}(t) \hat{\tilde{\psi}}_{l}, ~ U_{ml}(t) = \sum_{n=-M}^{M}\hat{\tau}^{\delta,n,\ast}_{m,l}\tilde{u}_{n}(t),
+\]
+we have 
+\[
+\hat{u}_{m}(t) \approx \sum_{l=1}^{N_{s}}U_{ml}(0) \hat{\tilde{\psi}}_{l}(t), ~ U_{ml}(0) = \sum_{n=-M}^{M}\hat{\tau}^{\delta,n,\ast}_{m,l}\tilde{u}_{n}(0).
+\]
+where $\hat{\tilde{\psi}}_{l}(t)$ represents the $l^{th}$ component of the flow $\varphi\left(t,\hat{\tilde{\psi}} \right)$.  Thus we are in effect arguing that the scaling function represents such an efficient basis for the initial conditions, the evolution of the scaling function itself with respect to the nonlinear PDE represents an efficient basis moving forward in time.  Said another way, while the evolution of $\hat{\tilde{\psi}}(t)$ is nonlinear, we are arguing that the evolution of the initial condition can be found from shifting and linearly combining the nonlinearly evolved mode.
+
+Thus Equation \eqref{levec} becomes 
+\[
+\tilde{W}\tilde{U} \left(e^{\lambda t} \hat{\Psi}(0) - \hat{\Psi}(t)\right) = 0, ~ \tilde{U}_{ml} = U_{ml}.
+\]  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Building the Wavelet Basis, Koopman Analysis, and Filtration}
 We choose a representative function $\psi(x)\in \mathcal{H}$ and sample it over a discretized mesh 
 \[

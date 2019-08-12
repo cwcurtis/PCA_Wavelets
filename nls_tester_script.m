@@ -4,10 +4,12 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
     KT = 2*K;
     Xmesh = linspace(-Llx,Llx,KT+1);
     Xmesh = Xmesh(1:KT)';
-    osamp = 2;
+    osamp = 4;
+    dx = Llx/K;
     
-    rphi = phirscl(vphi,Llx,KT,dx,osamp); 
-    [nfin,hfltr,hflti,osamp] = nls_solver_stndalne(rphi,k0,K,Llx,sig,tf,dt);
+    [nfin,nmode] = nls_solver_filter(k0,K,Llx,sig,tf,dt);
+    hfltr = filter_maker(real(nmode),KT,dx,Llx,osamp);
+    hflti = filter_maker(imag(nmode),KT,dx,Llx,osamp);
     
     KTT = KT*osamp;
     Kosmp = K*osamp;
@@ -17,7 +19,6 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
     gflti = nonesosmp'.*flipud(hflti);
     gflti = [gflti(KTT);gflti(1:KTT-1)];
         
-    
     %dx = 2*Llx/KT;
     %dk = 2*pi/(dx*KT);
     %Kmesh = (-pi/dx:dk:pi/dx-dk);
@@ -65,10 +66,10 @@ function nls_tester_script(Llx,K,k0,sig,tf,dt)
     af = ar + 1i*ai;
     
     figure(nlvls+3)
-    plot(Xmesh,real(nfin),'k-',Xmesh,real(af),'r-','LineWidth',2)
+    plot(Xmesh,real(nfin),'k-',Xmesh,ar,'r-','LineWidth',2)
         
     figure(nlvls+4)
-    plot(Xmesh,imag(nfin),'k-',Xmesh,imag(af),'r-','LineWidth',2)
+    plot(Xmesh,imag(nfin),'k-',Xmesh,ai,'r-','LineWidth',2)
     
     figure(nlvls+5)
     plot(Xmesh,log10(abs(nfin-af)),'k-','LineWidth',2)

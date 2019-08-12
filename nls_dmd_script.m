@@ -10,9 +10,9 @@ function nls_dmd_script(Llx,K,k0,sig,tf,dt)
     Kc = Kc+1;
     pslice = [1:Kc-1 Kuc+1:KT];
     
-    rphi = phirscl(sech(Xmesh).*exp(1i*Xmesh),dx); 
+    %rphi = phirscl(1/(dx*sqrt(2*pi)).*exp(-Xmesh.^2/(2*dx^2)).*exp(1i*Xmesh),dx); 
     %rphi = phirscl(sech(Xmesh),dx); 
-    nsol = nls_solver_stndalne(rphi,k0,K,Llx,sig,tf,dt);
+    nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt);
     
     %disp("Condition number of nsol is:")
     %disp(cond(nsol(:,1:end-1)))
@@ -20,7 +20,7 @@ function nls_dmd_script(Llx,K,k0,sig,tf,dt)
     [U,S,V] = svd(nsol(:,1:end-1),'econ');
     Sd = diag(S);
     mSv = max(Sd);
-    kpinds = log10(Sd/mSv) > -4;
+    kpinds = log10(Sd/mSv) > -6;
     Si = diag(1./Sd(kpinds));
     Amat = U(:,kpinds)'*nsol(:,2:end)*V(:,kpinds)*Si;
         

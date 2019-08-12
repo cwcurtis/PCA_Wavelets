@@ -1,6 +1,6 @@
 function [k0,sk,Om,ad,anl] = nls_params(k0,Llx,sig)
 
-    k0 = k0*pi/Llx;
+    %k0 = k0*pi/Llx;
     
     sk = sign(k0);
 
