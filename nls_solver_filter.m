@@ -1,4 +1,4 @@
-function [nfin,nmode] = nls_solver_filter(k0,K,Llx,sig,tf,dt)
+function nsol = nls_solver_filter(k0,K,Llx,sig,tf,dt)
 
     nsteps = floor(tf/dt);
     KT = 2*K;
@@ -10,9 +10,9 @@ function [nfin,nmode] = nls_solver_filter(k0,K,Llx,sig,tf,dt)
     
     Xmesh = linspace(-Llx,Llx,KT+1);
     Xmesh = (Xmesh(1:KT))';
-    ep = .5;
-    sltn = sqrt(2*ad/anl)*(sech(Xmesh) + .5*sech(Xmesh-5));
-    noise = fft(exp(-Xmesh.^2./(2*ep^2))/(ep*sqrt(2*pi))).*exp(1i*2*pi*rand(KT,1));
+    ep = .25;
+    sltn = sqrt(2*ad/anl)*(sech(Xmesh) + ep*sech(Xmesh-5));
+    noise = fft(exp(-Xmesh.^2./(2*ep^2))/sqrt(ep*sqrt(pi))).*exp(1i*2*pi*rand(KT,1));
     n0 = fft(sltn)+noise*ep;
     n0(Kc:Kuc) = 0;
     
@@ -46,24 +46,20 @@ function [nfin,nmode] = nls_solver_filter(k0,K,Llx,sig,tf,dt)
         
         nsol(:,jj+1) = ifft(n0);
         
-    end  
+    end
+    
+    %{
     nfin = ifft(n0);
     navg = mean(nsol,2);
     ndif = nfin - navg;
     [U,S,~] = svd((nsol-navg));
     SD = diag(S);
-    SD = SD/max(SD);
-    ikp = SD>0;
-    SDr = log10(SD(ikp));
+    SD = log10(SD/max(SD));
+    ikp = SD>-.5;    
+    ips = U(:,ikp)'*ndif;
+    nmode = navg + U(:,ikp)*ips;
+    %}
     
-    ip1 = sum(ndif.*conj(U(:,1)));
-    ip2 = sum(ndif.*conj(U(:,2)));
-    ip3 = sum(ndif.*conj(U(:,3)));
-    ip4 = sum(ndif.*conj(U(:,4)));
+    %plot(Xmesh,abs(nmode),'k-','LineWidth',2)
+    %pause
     
-    %nmode = navg + ip1*U(:,1) + ip2*U(:,2) + ip3*U(:,3) + ip4*U(:,4);
-    %nmode = navg + ip1*U(:,1);
-    
-    dx = Llx/K;
-    nmodet = 1/(dx*sqrt(2*pi)).*exp(-Xmesh.^2/(2*dx^2));
-    nmode = nmodet.*exp(1i.*Xmesh);

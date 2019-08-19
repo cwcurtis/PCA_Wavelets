@@ -10,24 +10,14 @@ function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt)
     
     Xmesh = linspace(-Llx,Llx,KT+1);
     Xmesh = (Xmesh(1:KT))';
-    ep = .5;
-    sltn = sqrt(2*ad/anl)*(sech(Xmesh) + .5*sech(Xmesh-5));
+    ep = .05;
+    sltn = sqrt(2*ad/anl)*(sech(Xmesh) + ep*sech(Xmesh-5));
     noise = fft(exp(-Xmesh.^2./(2*ep^2))/(ep*sqrt(2*pi))).*exp(1i*2*pi*rand(KT,1));
     n0 = fft(sltn)+noise*ep;
-    %n0 = fft(sqrt(2*ad/anl)*sech(Xmesh));
-    %filt = 1./n0;
-    %filt(Kc:Kuc) = 0;
-    
     n0(Kc:Kuc) = 0;
     
-    pslice = [1:Kc-1 Kuc+1:KT];
-    nsol = zeros(length(pslice),nsteps+1);
-    %n0f = n0.*filt;
-    %nsol(:,1) = fftshift(n0f(pslice));
-    nsol(:,1) = fftshift(n0(pslice));
-    
-    %plot(Xmesh,abs(rphi),'k-','LineWidth',2)
-    %pause
+    nsol = zeros(KT,nsteps+1);
+    nsol(:,1) = ifft(n0);
     
     Emh = exp(1i*dt/2*ad*Kmesh.^2);
     Em = Emh.*Emh;
@@ -55,11 +45,8 @@ function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt)
         n0 = Em.*(n0+k1/6) + Emh.*(k2+k3)/3 + k4/6;
         n0(Kc:Kuc) = 0;
         
-        %nf = n0.*filt;
-        %nsol(:,jj+1) = fftshift(nf(pslice));
-        
-        nsol(:,jj+1) = fftshift(n0(pslice));
-        
+        nsol(:,jj+1) = ifft(n0);
+             
     end  
     
     
