@@ -1,11 +1,11 @@
-function dmd_maker(nsol,dt)
+function dmd_maker(nsol,dt,tol)
 
     [~,nsteps] = size(nsol);
     
     [U,S,V] = svd(nsol(:,1:end-1),'econ');
     Sd = diag(S);
     mSv = max(Sd);
-    kpinds = log10(Sd/mSv) > -6;
+    kpinds = log10(Sd/mSv) > -tol;
     Si = diag(1./Sd(kpinds));
     Amat = U(:,kpinds)'*nsol(:,2:end)*V(:,kpinds)*Si;
         
@@ -25,6 +25,9 @@ function dmd_maker(nsol,dt)
     disp(norm(naprx-nsol(:,end),'inf')/norm(nsol(:,end),'inf'))
     sigtrms = log10( abs( fbal/max(abs(fbal)) ) );
     
+    disp("Spectral error is:")
+    disp(norm(real(evls).*fbal))
+            
     figure(1)
     scatter(real(evls),imag(evls))
     

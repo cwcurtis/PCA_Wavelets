@@ -1,4 +1,4 @@
-function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt)
+function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt,ep)
 
     nsteps = floor(tf/dt);
     KT = 2*K;
@@ -10,7 +10,6 @@ function nsol = nls_solver_stndalne(k0,K,Llx,sig,tf,dt)
     
     Xmesh = linspace(-Llx,Llx,KT+1);
     Xmesh = (Xmesh(1:KT))';
-    ep = .05;
     sltn = sqrt(2*ad/anl)*(sech(Xmesh) + ep*sech(Xmesh-5));
     noise = fft(exp(-Xmesh.^2./(2*ep^2))/(ep*sqrt(2*pi))).*exp(1i*2*pi*rand(KT,1));
     n0 = fft(sltn)+noise*ep;

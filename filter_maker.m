@@ -1,22 +1,27 @@
-function [gflt,hflt,rphif] = filter_maker(KT,dx,Llx,osamp)
+function [gflt,hflt,rphif] = filter_maker(vphi,KT,dx,Llx)
     
-    KT = osamp*KT;
-    dk = pi/(KT*dx);
-    Xmesh = (-Llx:dx:Llx-dx)';
-    vphi = 1/(dx*sqrt(2*pi)).*exp(-Xmesh.^2/(2*dx^2));
-    [~,rphif] = phirscl(vphi,dx);
+    dk = 2*pi/(KT*dx);
     
-    Kmesh = (-pi/(2*dx):dk:pi/(2*dx));
+    %vphi = 1/(dx*sqrt(2*pi)).*exp(-Xmesh.^2/(2*dx^2));
+    
+    vphira = wvlt_smth(real(vphi),6);    
+    vphiia = wvlt_smth(imag(vphi),6);
+    avphia = abs(vphira + 1i*vphiia);
+    
+    [~,rphif] = phirscl(avphia,dx);
+    
+    Kmesh = (-pi/dx:dk:pi/dx-dk);
+    mask = zeros(KT,1);
+    inds = abs(Kmesh)<= pi/(2*dx);
+    mask(inds) = 1;
+        
     Xmesh = (-Llx:dx:Llx-dx);
+    
     Kmat1 = exp(-1i*Kmesh'*Xmesh);
     Kmat2 = exp(-1i*2*Kmesh'*Xmesh);
-    pvec = exp( 1i*( angle(Kmat2*vphi) - angle(Kmat1*vphi) ) );
-    Kvals = 1i*dx*(-KT/2+1:KT/2)';
+    pvec = sqrt(2).*mask.*exp( 1i*( (Kmesh').^8.*( angle(Kmat2*avphia) - angle(Kmat1*avphia) ) ) );
     
-    odd = 4*exp(Kvals*Kmesh(2:2:KT))*pvec(2:2:KT);
-    evn = 2*exp(Kvals*Kmesh(3:2:KT-1))*pvec(3:2:KT-1);
-    gflt = real(1/(3*sqrt(2)*KT)*( exp(Kvals*Kmesh(1))*pvec(1) +  exp(Kvals*Kmesh(KT+1))*pvec(KT+1) + odd + evn ));  
-    
-    hflt = qmf(gflt);
+    gflt = ifft(ifftshift(pvec));
+    hflt = qmf(gflt);    
     
 end
