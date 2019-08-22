@@ -1,4 +1,4 @@
-function dmd_maker(nsol,dt,tol)
+function [evls,sigtrms] = dmd_maker(nsol,dt,tol)
 
     [~,nsteps] = size(nsol);
     
@@ -25,27 +25,26 @@ function dmd_maker(nsol,dt,tol)
     disp(norm(naprx-nsol(:,end),'inf')/norm(nsol(:,end),'inf'))
     sigtrms = log10( abs( fbal/max(abs(fbal)) ) );
     
+    %{
     disp("Spectral error is:")
     disp(norm(real(evls).*fbal))
-            
-    figure(1)
-    scatter(real(evls),imag(evls))
+    %}
     
-    figure(2)
-    scatter(real(evls), sigtrms)
-    
-    figure(3)
-    scatter(imag(evls), sigtrms)
-    
+    %{
     figure(4)
     plot(abs(nsol(:,end)))
     
     figure(5)
     plot(abs(naprx))
     
+    pause
+    %}
+    
+    %{
     figure(6)
     surf(1:kpsz,1:mdsz,log10(abs(Mds)),'LineStyle','none')
     
     figure(7)
     surf(1:kpsz,1:kpsz,log10(abs(Mds'*Mds)),'LineStyle','none')
+    %}
     
